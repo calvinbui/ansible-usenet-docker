@@ -4,6 +4,13 @@
 
 `ansible-playbook site.yml -vv`
 
+## System Requirements
+
+-   1.5GB of RAM
+-   2 CPU minimum
+-   Ubuntu 16.04 and onward
+-   16GB of space
+
 ## About
 
 This is an Ansible playbook which installs my Usenet services in Docker containers on a Ubuntu server.
