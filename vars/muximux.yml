@@ -1,0 +1,11 @@
+---
+
+muximux:
+  name: muximux
+  # Docker image
+  image: linuxserver/muximux
+  port: 8080
+  config:
+    directory: "{{ base_folder }}/muximux"
+    # Webpage title
+    title: "Hey You!"

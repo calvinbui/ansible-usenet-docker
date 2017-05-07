@@ -1,0 +1,35 @@
+server {
+  listen 80 default_server;
+  server_name {{ nginx.proxy.domain }};
+
+  location / {
+    return 301 https://$server_name$request_uri;
+  }
+
+  location /.well-known/acme-challenge {
+    default_type "text/plain";
+    root {{ nginx_base }}/{{ nginx.proxy.domain }};
+  }
+}
+
+server {
+  listen 443 ssl;
+  server_name {{ nginx.proxy.domain }};
+
+  include  {{ nginx.ldap.prompt }};
+
+  ssl_certificate_key {{ nginx.certs.remote_directory }}/config/live/{{ nginx.proxy.domain }}/privkey.pem;
+  ssl_certificate {{ nginx.certs.remote_directory}}/config/live/{{ nginx.proxy.domain }}/fullchain.pem;
+
+  {# services defined in services.yml vars file #}
+  {% for service in services %}
+  location {{ service.location}} {
+    {% if service.include is defined %}
+    {% for item in service.include %}
+    include {{ item }};
+    {% endfor %}
+    {% endif %}
+    proxy_pass {{ service.proxy_pass}};
+  }
+  {% endfor %}
+}

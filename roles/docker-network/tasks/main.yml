@@ -1,0 +1,7 @@
+---
+
+# Requires docker installed first
+
+- name: Create user-defined network
+  docker_network:
+    name: "{{ docker.network }}"

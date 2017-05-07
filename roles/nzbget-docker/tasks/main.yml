@@ -1,0 +1,38 @@
+---
+
+- name: Create NZBGet config folder
+  file:
+    path: "{{ nzbget.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy NZBGet configuration
+  template:
+    src: nzbget.conf.j2
+    dest: "{{ nzbget.config.directory }}/nzbget.conf"
+
+- name: Pull NZBGet image
+  docker_container:
+    name: "{{ nzbget.name }}"
+    image: "{{ nzbget.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ nzbget.port.http }}:{{ nzbget.port.http }}"
+    volumes:
+      - "{{ nzbget.config.directory }}:/config"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+# Pair with FreeNAS permissions to remove completely
+- name: Remove the lines in the init script taking ownership of the download folder
+  command: "docker exec -i {{ nzbget.name }} {{ nzbget.config.command }}"

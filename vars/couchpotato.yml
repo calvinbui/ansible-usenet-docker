@@ -1,0 +1,66 @@
+---
+
+couchpotato:
+  name: couchpotato
+  image: linuxserver/couchpotato
+  port:
+    http: 5050
+    https: 5151
+  config:
+    directory: "{{ base_folder }}/couchpotato"
+    core:
+      apikey: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        39353766343335346639383166636364653737666466653335653837353836626332636162303865
+        6436613264356437376634633065643632393339376262300a303731323064383466313432636138
+        31333838363035663431336138646238626265393135356264313466663163343131616633343337
+        6663653966306335350a333737353333613933343130663333333461363062373165313031613835
+        64653066303263303237356466376462613139396565346634663863306532303238623063663562
+        3363636133363835336133666234333238346362333336646537
+      dark_theme: 1
+      launch_browser: 0
+      dereferrer: ""
+      urlbase: /couchpotato
+      show_wizard: 0
+    manage:
+      library_refresh_interval: 24
+      cleanup: 0
+      enabled: 1
+      library: /movies/
+    renamer:
+      file_name: <thename><cd>.<quality>.<group>.<ext>
+      nfo_name: <filename>.<ext>
+      from: /downloads/Movies/
+      to: /movies/
+      cleanup: 1
+      enabled: 1
+      unrar: 1
+    subtitle:
+      languages: en
+      enabled: 1
+    trailer:
+      enabled: 1
+    blackhole:
+      enabled: 0
+    nzbget:
+      enabled: 1
+    transmission:
+      enabled: 1
+    pushbullet:
+      enabled: 1
+    newznab:
+      use: 1
+      extra_score: ""
+      custom_tag: ""
+    kickasstorrents:
+      enabled: 0
+    torrentz:
+      enabled: 0
+    searcher:
+      preferred_method: nzb
+    imdb:
+      chart_display_top250: 1
+      chart_display_theater: 1
+    moviesearcher:
+      cron_hour: 8
+      cron_minute: 15

@@ -1,0 +1,77 @@
+---
+# SSH password
+ansible_ssh_pass: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  32323034373733316565613630333538623132386332323933653837383365376361633838656261
+  3161623534393864333933656266326137656361613236300a373466636166323639323635303833
+  33316563373466373336303962383336386139646264646336363739353261646639653336396166
+  3231626464666464360a616534633535366538663339343238643730353938326538623465323965
+  3565
+
+# sudo password
+ansible_become_pass: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  63333939323465386135363365373838313862356437616666353964653830623261313938656537
+  3462343937303763363333613430376561343334323636340a333638396366393763383332373365
+  63663138613664643161393163393936343766376431653535343235303664636632383135663365
+  3136303963653439610a643139613430323831626231363930383164633836366632343964653162
+  6234
+
+# the user who will be in charge of everything
+user:
+  name: calvin
+  group: calvin
+  uid: 1000
+  gid: 1000
+
+timezone: Australia/Sydney
+
+# The network that will be used for Docker containers to speak to one another
+docker:
+  network: download.nw
+
+pushbullet:
+  api: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    66303230313962623230383430353932616466306139623562633436613165633963346236306633
+    3866303834393663356537346664656139346134353239300a346232626333383366333261356330
+    32316261393966363435653066303737666662363732393938653632623461323063653232393631
+    6434633466613962310a313039393735323035383631633830353331346263346633643463613063
+    65303161643837363561633063623035343766373835623564613931353637626631373334393839
+    6162383536623239656566333734353562666161623336353432
+
+# Path to put everything under, can be your home directory i.e. /home/calvin
+root_folder: "/"
+# The application directory, where all the roles will install to
+app_folder: "usenet"
+# Put the above two together
+base_folder: "/{{ root_folder}}/{{ app_folder }}"
+# if there are two double slashes i.e. //usenet/hdd, it is automatically ignored by Linux
+
+# The mount folder name
+mount: hdd
+# Where the NFS file share will be
+mounts_folder: "{{ base_folder }}/{{ mount }}"
+
+# NFS share settings, matches the mount command
+nfs_mount:
+  src: "10.0.9.5:/mnt/hdd/"
+  name: "{{ mounts_folder }}"
+  mode: "0771"
+  user: "{{ user.name }}"
+  group: "{{ user.group }}"
+  unit_file: "{{ app_folder }}-{{ mount }}"
+
+# the folders as a result of the NFS mount
+folders:
+  # Where downloads will be looked for
+  downloads: "{{ mounts_folder }}/Downloads"
+  # Where incomplete downloads will be
+  intermediate: "{{ mounts_folder }}/Downloads/Intermediate"
+  incomplete: "{{ mounts_folder }}/Downloads/Intermediate/Incomplete"
+  # where nzb and torrent files are stored
+  watch: "{{ mounts_folder }}/Downloads/Intermediate/Watch"
+  # where TV shows will move to
+  tv: "{{ mounts_folder }}/TV"
+  # where Movies will move to
+  movies: "{{ mounts_folder }}/Movies"

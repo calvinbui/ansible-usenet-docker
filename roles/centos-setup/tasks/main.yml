@@ -1,0 +1,22 @@
+---
+
+- name: Update everything
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Enable EPL
+  yum:
+    name: epel-release
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Install open-vm-tools
+  yum:
+    name: open-vm-tools
+    state: latest
+    update_cache: yes
+  become: true

@@ -1,0 +1,35 @@
+---
+
+- name: Create Couchpotato config folder
+  file:
+    path: "{{ couchpotato.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy configuration file
+  template:
+    src: config.ini.j2
+    dest: "{{ couchpotato.config.directory }}/config.ini"
+
+- name: Pull Couchpotato image
+  docker_container:
+    name: "{{ couchpotato.name }}"
+    image: "{{ couchpotato.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ couchpotato.port.http }}:{{ couchpotato.port.http }}"
+    volumes:
+      - "{{ couchpotato.config.directory }}:/config"
+      - "{{ folders.movies }}:/movies"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"

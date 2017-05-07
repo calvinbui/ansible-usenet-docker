@@ -1,0 +1,16 @@
+<Config>
+  <LogLevel>Info</LogLevel>
+  <Port>{{ sonarr.port.http }}</Port>
+  <UrlBase>{{ sonarr.config.urlbase }}</UrlBase>
+  <BindAddress>*</BindAddress>
+  <SslPort>{{ sonarr.port.https }}</SslPort>
+  <EnableSsl>False</EnableSsl>
+  <ApiKey>{{ sonarr.config.apikey }}</ApiKey>
+  <AuthenticationMethod>None</AuthenticationMethod>
+  <Branch>master</Branch>
+  <LaunchBrowser>False</LaunchBrowser>
+  <SslCertHash></SslCertHash>
+  <UpdateMechanism>BuiltIn</UpdateMechanism>
+  <AnalyticsEnabled>False</AnalyticsEnabled>
+  <UpdateAutomatically>True</UpdateAutomatically>
+</Config>

@@ -1,0 +1,71 @@
+---
+
+# where NGINX is in the container
+nginx_base: /etc/nginx
+# Where the conf.d files are in the container
+nginx_conf_d: "{{ nginx_base }}/conf.d"
+
+nginx:
+  name: nginx
+  # Docker image
+  image: dweomer/nginx-auth-ldap
+  port:
+    http: 80
+    https: 443
+  config:
+    # where nginx will be on the server (not container)
+    directory: "{{ base_folder }}/nginx"
+    conf: "{{ base_folder }}/nginx/conf.d"
+    file: "{{ base_folder }}/nginx/nginx.conf"
+    # what to include in nginx.conf
+    includes:
+      - "{{ nginx_conf_d }}/ldap-config.conf"
+      - "{{ nginx_conf_d }}/usenet-services.conf"
+      - "{{ nginx_conf_d }}/vms.conf"
+  # custom DNS servers to add
+  dns: 10.0.9.1
+  proxy:
+    file: "{{ nginx_conf_d }}/proxy-settings.conf"
+    domain: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      65663536376561303734323866383265316531333839613038313339356461643965353631656533
+      3666383065653231643264353730373531326537383438310a333036366164353766316330643330
+      61616532633730626466323639653035363939626639393832303230396236646536316530346462
+      3231613232373739630a303037306332346536386532356465376531336666333535386663393532
+      3062
+  ldap:
+    file: "{{ nginx_conf_d }}/ldap-config.conf"
+    prompt: "{{ nginx_conf_d }}/ldap-prompt.conf"
+    server: adds
+    url: "ldaps://10.0.9.10:3269/dc=home,dc=net?sAMAccountName?sub?(objectClass=person)"
+    binddn:
+      # domain of user
+      domain: home
+      # user to connect to ldap
+      user: nginx
+      password: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        36306535643636666461353730393436346231393164333233663264643665613166363838346462
+        3963376166313536626435373666393333663162386632380a356332313936313236316565316532
+        38376537326637383962376635323866373262333966323836646339616461353531313865663635
+        3433646434383032300a656335353765316466663764343934613762636464373163623266313063
+        6365
+    # group to authenticate against
+    group: "CN=Real,CN=Users,DC=home,DC=net"
+  vms:
+    domain: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      36626361316636653436386366303061316136383131383863376138306664316137343039313131
+      3733333761313963666565626534313563646666623865300a393131613535326435626162323666
+      33663861326638333663633332393565663633616236366163666537623539326265396432626533
+      3334323030373734380a396662313437643735343335343638336338383435363534336539306630
+      3331
+    host: vms-dmz
+    port:
+      http: 8081
+      https: 8082
+  site:
+     domain:
+  certs:
+    directory: "{{ base_folder }}/nginx/certs"
+    remote_directory: "{{ nginx_base }}/certs"

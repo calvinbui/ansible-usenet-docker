@@ -1,0 +1,120 @@
+---
+
+- name: Create nginx conf.d folder
+  file:
+    path: "{{ nginx.config.conf }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+# Certificate folders -----------------------------------------------------
+
+- name: Create certificate config folder
+  file:
+    path: "{{ nginx.certs.directory }}/config"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create certificate work folder
+  file:
+    path: "{{ nginx.certs.directory }}/work"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create certificate  logs folder
+  file:
+    path: "{{ nginx.certs.directory }}/logs"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+# Create the webroots ----------------------------------------------------------
+
+- name: Create proxy domain folder
+  file:
+    path: "{{ nginx.config.directory }}/{{ nginx.proxy.domain }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create vms domain folder
+  file:
+    path: "{{ nginx.config.directory }}/{{ nginx.vms.domain }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+# All the files to copy --------------------------------------------------------
+
+- name: Copy LDAP configuration
+  template:
+    src: ldap-config.conf.j2
+    dest: "{{ nginx.config.conf }}/ldap-config.conf"
+
+- name: Copy LDAP Auth Prompt
+  template:
+    src: ldap-prompt.conf.j2
+    dest: "{{ nginx.config.conf }}/ldap-prompt.conf"
+
+- name: Copy Proxy configuration
+  copy:
+    src: proxy-settings.conf
+    dest: "{{ nginx.config.conf }}/proxy-settings.conf"
+
+- name: Copy usenet-services configuration
+  template:
+    src: usenet-services.conf.j2
+    dest: "{{ nginx.config.conf }}/usenet-services.conf"
+
+- name: Copy vms configuration
+  template:
+    src: vms.conf.j2
+    dest: "{{ nginx.config.conf }}/vms.conf"
+
+- name: Copy nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx.config.file }}"
+
+# ------------------------------------------------------------------------------
+
+- name: Pull nginx image
+  docker_container:
+    name: "{{ nginx.name }}"
+    image: "{{ nginx.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    dns_servers:
+      - "{{ nginx.dns }}"
+    dns_search_domains:
+      - "{{ nginx.vms.domain }}"
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ nginx.port.http }}:80"
+      - "{{ nginx.port.https }}:443"
+    volumes:
+      - "{{ nginx.config.conf }}:/etc/nginx/conf.d:ro"
+      - "{{ nginx.config.file }}:/etc/nginx/nginx.conf:ro"
+      - "{{ nginx.certs.directory }}:{{ nginx.certs.remote_directory }}:ro"
+      - "{{ nginx.config.directory }}/{{ nginx.proxy.domain }}:{{ nginx_base }}/{{ nginx.proxy.domain }}"
+      - "{{ nginx.config.directory }}/{{ nginx.vms.domain }}:{{ nginx_base }}/{{ nginx.vms.domain }}"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"

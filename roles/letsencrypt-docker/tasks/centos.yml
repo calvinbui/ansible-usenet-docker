@@ -1,0 +1,33 @@
+---
+
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  become: true
+  with_items:
+    - yum-utils
+    - gcc
+    - openssl-devel
+    - python-devel
+
+- name: Add EPEL
+  command: yum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional
+  become: true
+
+- name: Install cerbot
+  yum:
+    name: certbot
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Upgrade pip
+  command: "pip install --upgrade pip"
+  become: true
+
+
+- name: Upgrade pyOpenSSL
+  command: "pip install --upgrade pyopenssl"
+  become: true

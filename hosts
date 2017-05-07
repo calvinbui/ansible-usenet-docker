@@ -1,0 +1,11 @@
+[new-machine]
+
+[new-machine:vars]
+interface=ens192
+ipaddress=10.0.9.4
+netmask=255.255.255.0
+gateway=10.0.9.1
+dns=10.0.9.1
+
+[usenet]
+10.0.9.4

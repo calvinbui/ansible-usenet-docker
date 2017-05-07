@@ -1,0 +1,42 @@
+---
+
+- name: Create NZB Hydra config folder
+  file:
+    path: "{{ nzbhydra.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create NZB Hydra's second config folder
+  file:
+    path: "{{ nzbhydra.config.directory }}/hydra"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+
+- name: Copy NZB Hydra configuration
+  template:
+    src: settings.cfg.j2
+    dest: "{{ nzbhydra.config.directory }}/hydra/settings.cfg"
+
+- name: Pull NZB Hydra image
+  docker_container:
+    name: "{{ nzbhydra.name }}"
+    image: "{{ nzbhydra.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{nzbhydra.port}}:{{nzbhydra.port}}"
+    volumes:
+      - "{{ nzbhydra.config.directory }}:/config"
+      - "{{ folders.watch }}:/watch"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"

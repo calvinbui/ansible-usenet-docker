@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Change the owner of the folder to the one you want
+chown -R {{freenas.owner}} {{freenas.folder}}
+
+# Change the group of the folder to the one you want
+chgrp -R '{{freenas.group.domain}}\{{freenas.group.id}}' {{freenas.folder}}

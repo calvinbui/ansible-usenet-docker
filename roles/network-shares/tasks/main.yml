@@ -1,0 +1,42 @@
+---
+
+# If that are current mounted. Better not to dismount everything as some are important
+- name: Unmount existing shares
+  shell: "umount {{nfs_mount.name}}"
+  ignore_errors: true
+  become: true
+
+- name: Install NFS dependencies
+  apt:
+    name: nfs-common
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install NFS dependencies
+  yum:
+    name: nfs-utils
+    state: latest
+    update_cache: yes
+  become: true
+  when: ansible_distribution == "CentOS"
+
+- name: Create mount directory
+  file:
+    path: "{{ nfs_mount.name }}"
+    state: directory
+    owner: "{{ nfs_mount.user }}"
+    group: "{{ nfs_mount.group }}"
+    mode: "{{ nfs_mount.mode }}"
+  become: true
+
+# To autostart
+- name: Add NFS shares to fstab
+  mount:
+    src: "{{ nfs_mount.src }}"
+    name: "{{ nfs_mount.name }}"
+    fstype: nfs
+    state: mounted
+  become: true

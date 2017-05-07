@@ -1,0 +1,40 @@
+---
+
+- name: Create FreeNAS config folder
+  file:
+    path: "{{ freenas.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+# Required to run the change permission script without entering a password
+- name: Install sshpass
+  apt:
+    name: sshpass
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install sshpass
+  yum:
+    name: sshpass
+    state: latest
+    update_cache: yes
+  become: true
+  when: ansible_distribution == "CentOS"
+
+- name: Copy scripts to change permissions
+  template:
+    src: freenas-permissions.sh.j2
+    dest: "{{ freenas.config.directory }}/freenas-permissions.sh"
+    mode: 0400
+
+# Run the script by piping its content into the SSH connection
+- name: Run script over SSH to change permissions
+  shell: 'cat freenas-permissions.sh | sshpass -p {{ freenas.password }} ssh -o "StrictHostKeyChecking no" {{ freenas.user }}@{{ freenas.ip }}'
+  args:
+    chdir: "{{ freenas.config.directory }}"

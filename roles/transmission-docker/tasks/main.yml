@@ -1,0 +1,48 @@
+---
+
+- name: Create Transmission config folder
+  file:
+    path: "{{ transmission.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy Transmission configuration
+  template:
+    src: settings.json.j2
+    dest: "{{ transmission.config.directory }}/settings.json"
+
+- name: Pull Transmission image
+  docker_container:
+    name: "{{ transmission.name }}"
+    image: "{{ transmission.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ transmission.port.web }}:{{ transmission.port.web }}"
+      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}"
+      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}/udp"
+    volumes:
+      - "{{ transmission.config.directory }}:/config"
+      - "{{ folders.downloads }}:/downloads"
+      - "{{ folders.watch }}:/watch"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+- name: Remove the lines in the init script taking ownership of the download folder
+  command: "docker exec -i {{ transmission.name }} {{ transmission.config.command }}"
+
+- name: Remove the complete and incomplete folder created
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ folders.downloads }}/complete"
+    - "{{ folders.downloads }}/incomplete"

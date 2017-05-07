@@ -1,0 +1,22 @@
+---
+
+freenas:
+  config:
+    directory: "{{ base_folder }}/freenas"
+  user: root
+  password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    62313239353635623338323966393563386633613731646133363566623738653439336130626637
+    3231353336326465663766636661383063316261633536360a346637326438653662646439326265
+    39323137663339633139383431613562333362373366336136303263333866626639356636626365
+    3836316539653334340a316464326537623732636631633335623061326138666164353134393437
+    3835
+  ip: 10.0.9.5
+  # owner of folder
+  owner: calvin
+  # group of folder. the script adds the \ in between the domain and ID
+  group:
+    domain: HOME
+    id: "domain users"
+  # the folder to take ownership of
+  folder: /mnt/hdd/Downloads

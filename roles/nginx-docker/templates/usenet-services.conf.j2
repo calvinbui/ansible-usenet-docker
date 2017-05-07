@@ -1,0 +1,23 @@
+server {
+  listen 80 default_server;
+  server_name {{ nginx.proxy.domain }};
+
+  include  {{ nginx.ldap.prompt }};
+
+  location /.well-known/acme-challenge {
+    default_type "text/plain";
+    root {{ nginx_base }}/{{ nginx.proxy.domain }};
+  }
+
+  {# services defined in services.yml vars file #}
+  {% for service in services %}
+  location {{ service.location}} {
+    {% if service.include is defined %}
+    {% for item in service.include %}
+    include {{ item }};
+    {% endfor %}
+    {% endif %}
+    proxy_pass {{ service.proxy_pass}};
+  }
+  {% endfor %}
+}

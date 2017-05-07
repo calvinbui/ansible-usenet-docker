@@ -1,0 +1,36 @@
+---
+
+- name: Create radarr config folder
+  file:
+    path: "{{ radarr.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy configuration file
+  template:
+    src: config.xml.j2
+    dest: "{{ radarr.config.directory }}/config.xml"
+
+- name: Pull radarr image
+  docker_container:
+    name: "{{ radarr.name }}"
+    image: "{{ radarr.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ radarr.port.http }}:{{ radarr.port.http }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ radarr.config.directory }}:/config"
+      - "{{ folders.movies }}:/movies"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"

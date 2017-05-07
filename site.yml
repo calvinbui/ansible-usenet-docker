@@ -1,0 +1,44 @@
+---
+
+- hosts: usenet
+
+  vars_files:
+    - vars/common.yml
+    - vars/couchpotato.yml
+    - vars/freenas.yml
+    - vars/letsencrypt.yml
+    - vars/muximux.yml
+    - vars/nginx.yml
+    - vars/nzbget.yml
+    - vars/nzbhydra.yml
+    - vars/services.yml
+    - vars/radarr.yml
+    - vars/sonarr.yml
+    - vars/transmission.yml
+
+  roles:
+    # - centos-setup
+    - ubuntu-setup
+    - network-shares
+    - docker
+    - docker-network
+    - nzbget-docker
+    - transmission-docker
+    - freenas-permissions
+    - nzbhydra-docker
+    - sonarr-docker
+    - couchpotato-docker
+    - muximux-docker
+    - nginx-docker
+    - letsencrypt-docker
+    # - radarr-docker
+
+# Just for setting IP addresses
+
+- hosts: new-machine
+
+  vars_files:
+    - vars/common.yml
+
+  roles:
+    - static-ip

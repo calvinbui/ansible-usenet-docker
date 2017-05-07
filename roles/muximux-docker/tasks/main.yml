@@ -1,0 +1,56 @@
+---
+
+# To be safe
+- name: Delete existing config folder
+  file:
+    path: "{{ muximux.config.directory }}"
+    state: absent
+  become: true
+
+- name: Create Muximux config folder
+  file:
+    path: "{{ muximux.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Pull Muximux image
+  docker_container:
+    name: "{{ muximux.name }}"
+    image: "{{ muximux.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ muximux.port }}:80"
+      # NGINX is powering this on port 80 in the container
+    volumes:
+      - "{{ muximux.config.directory }}:/config"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+# The /etc/cont-init.d/ scripts do a git clone so got to wait until it finishes
+- name: Wait for Muximux to finish downloading as its scripts take ownership of files
+  wait_for:
+    path: "{{ muximux.config.directory }}/www/muximux/index.php"
+
+- name: Copy configuration file
+  template:
+    src: settings.ini.php.j2
+    dest: "{{ muximux.config.directory }}/www/muximux/settings.ini.php"
+
+- name: Copy favicon
+  copy:
+    src: favicon.ico
+    dest: "{{ muximux.config.directory }}/www/muximux/favicon.ico"
+
+- name: Copy favicon folder
+  copy:
+    src: favicon
+    dest: "{{ muximux.config.directory }}/www/muximux/images"

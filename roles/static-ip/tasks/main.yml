@@ -1,0 +1,11 @@
+---
+
+- name: Set IP address using vars and template
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+  become: true
+
+- name: Reset networking
+  shell: "sudo ip addr flush {{interface}} && sudo systemctl restart networking.service"
+  become: true

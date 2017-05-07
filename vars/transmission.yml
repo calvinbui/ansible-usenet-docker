@@ -1,0 +1,37 @@
+---
+
+transmission:
+  name: transmission
+  image: linuxserver/transmission
+  port:
+    web: 9091
+    listen: 51413
+  config:
+    directory: "{{ base_folder }}/transmission"
+    download_dir: "/downloads/"
+    incomplete_dir: /downloads/Intermediate/Incomplete
+    rpc_password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      34666134656535356635643239643363643062623639333536333831396232656265393231613033
+      3561653235383761653862353466636232383764636238640a626237653733626363366538663865
+      63663131616561383563373336613861346631303631616331363966343732663530393665313361
+      3731643038626530370a656633663166323633626631643333663362306266653130303637303139
+      30376337616466613462313434346432363132313936326133653838376465336666383666646532
+      32653436306364346365646234666662636666633938316236616566353838613734643335393863
+      343030666230343636323763656263316534
+    rpc_url: /transmission/
+    rpc_username: transmission
+    rpc_whitelist: "*.*.*.*"
+    speed_limit_down: 10000
+    speed_limit_enabled: "true"
+    idle_seeding_limit: 1
+    idle_seeding_limit_enabled: "true"
+    ldp_enabled: "true"
+    peer_port: 51413
+    peer_limit_global: 556
+    peer_limit_per_torrent: 222
+    peer_port_random_on_start: "false"
+    ratio_limit: 0
+    ratio_limit_enabled: "true"
+    # command to run on the docker container to remove the command that takes ownership of the downloads folder
+    command: sed -i -e '/mkdir/d' -e '/downloads/d' /etc/cont-init.d/20-config
