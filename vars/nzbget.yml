@@ -49,6 +49,8 @@ nzbget:
       secureport: 6791
       user: root
       umask: 1000
+    incoming:
+      dupecheck: no
     queue:
       poststrategy: "sequential"
     connection:
