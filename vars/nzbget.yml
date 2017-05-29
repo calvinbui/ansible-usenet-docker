@@ -3,7 +3,7 @@
 nzbget:
   name: nzbget
   # Docker image
-  image: linuxserver/nzbget
+  image: calvinbui/nzbget
   port:
     http: 6789
     https: 6791
@@ -65,5 +65,3 @@ nzbget:
       - { number: "1", name: "Movies", destdir: "Movies", aliases: "movies*" }
       - { number: "2", name: "TV", destdir: "TV", aliases: "TV*" }
       - { number: "3", name: "Games", destdir: "Games", aliases: "Games, Wii" }
-    # command to run on the docker container to remove the command that takes ownership of the downloads folder
-    command: sed -i -e 's/chown\ abc:abc\ \\//g' -e 's/\(^.*\/downloads$\)//g' /etc/cont-init.d/30-config

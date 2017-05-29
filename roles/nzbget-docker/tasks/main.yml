@@ -32,7 +32,3 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
-
-# Pair with FreeNAS permissions to remove completely
-- name: Remove the lines in the init script taking ownership of the download folder
-  command: "docker exec -i {{ nzbget.name }} {{ nzbget.config.command }}"
