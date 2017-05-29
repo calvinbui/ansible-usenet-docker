@@ -35,14 +35,3 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
-
-- name: Remove the lines in the init script taking ownership of the download folder
-  command: "docker exec -i {{ transmission.name }} {{ transmission.config.command }}"
-
-- name: Remove the complete and incomplete folder created
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ folders.downloads }}/complete"
-    - "{{ folders.downloads }}/incomplete"

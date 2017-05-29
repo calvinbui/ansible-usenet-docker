@@ -33,5 +33,3 @@ transmission:
     peer_port_random_on_start: "false"
     ratio_limit: 0
     ratio_limit_enabled: "true"
-    # command to run on the docker container to remove the command that takes ownership of the downloads folder
-    command: sed -i -e '/mkdir/d' -e '/downloads/d' /etc/cont-init.d/20-config
