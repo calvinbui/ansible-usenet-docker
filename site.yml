@@ -17,20 +17,20 @@
     - vars/transmission.yml
 
   roles:
-    # - centos-setup
     - ubuntu-setup
     - network-shares
     - docker
     - docker-network
     - nzbget-docker
     - transmission-docker
-    - freenas-permissions
     - nzbhydra-docker
     - sonarr-docker
     - couchpotato-docker
     - muximux-docker
     - nginx-docker
     - letsencrypt-docker
+    # - freenas-permissions
+    # - centos-setup
     # - radarr-docker
 
 # Just for setting IP addresses
