@@ -23,6 +23,11 @@
   become: true
   when: ansible_distribution == "CentOS"
 
+- name: Check if mount directory already exists
+  stat:
+    path: "{{ nfs_mount.name }}"
+  register: nfs_mount_st
+
 - name: Create mount directory
   file:
     path: "{{ nfs_mount.name }}"
@@ -31,6 +36,7 @@
     group: "{{ nfs_mount.group }}"
     mode: "{{ nfs_mount.mode }}"
   become: true
+  when: nfs_mount_st.stat.isdir is not defined and nfs_mount_st.stat.isdir == False
 
 # To autostart
 - name: Add NFS shares to fstab
