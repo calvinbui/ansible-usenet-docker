@@ -3,7 +3,7 @@
 nzbget:
   name: nzbget
   # Docker image
-  image: calvinbui/nzbget
+  image: calvinbui/docker-nzbget
   port:
     http: 6789
     https: 6791

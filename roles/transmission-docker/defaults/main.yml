@@ -2,7 +2,7 @@
 
 transmission:
   name: transmission
-  image: linuxserver/transmission
+  image: calvinbui/docker-transmission
   port:
     web: 9091
     listen: 51413
