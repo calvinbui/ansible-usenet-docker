@@ -3,18 +3,7 @@
 - hosts: usenet
 
   vars_files:
-    - vars/common.yml
-    - vars/couchpotato.yml
-    - vars/freenas.yml
-    - vars/letsencrypt.yml
-    - vars/muximux.yml
-    - vars/nginx.yml
-    - vars/nzbget.yml
-    - vars/nzbhydra.yml
     - vars/services.yml
-    - vars/radarr.yml
-    - vars/sonarr.yml
-    - vars/transmission.yml
 
   roles:
     - ubuntu-setup
