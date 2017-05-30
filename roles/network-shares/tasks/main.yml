@@ -1,10 +1,10 @@
 ---
 
 # If that are current mounted. Better not to dismount everything as some are important
-- name: Unmount existing shares
-  shell: "umount {{nfs_mount.name}}"
-  ignore_errors: true
-  become: true
+# - name: Unmount existing shares
+#   shell: "umount {{nfs_mount.name}}"
+#   ignore_errors: true
+#   become: true
 
 - name: Install NFS dependencies
   apt:
