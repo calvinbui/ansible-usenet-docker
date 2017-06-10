@@ -14,13 +14,14 @@
     - transmission-docker
     - nzbhydra-docker
     - sonarr-docker
-    - couchpotato-docker
-    - muximux-docker
+    - radarr-docker
+    - organizr-docker
     - nginx-docker
     - letsencrypt-docker
     # - freenas-permissions
     # - centos-setup
-    # - radarr-docker
+    # - couchpotato-docker
+    # - muximux-docker
 
 # Just for setting IP addresses
 - hosts: new-machine
