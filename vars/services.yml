@@ -1,11 +1,17 @@
 ---
 
 services:
+# -
+#   name: Muximux
+#   location: /
+#   # Muximux is running on port 80 on the host but exposed through 8080 on the host
+#   proxy_pass: "http://{{ muximux.name }}.{{ docker.network }}"
 -
-  name: Muximux
+  name: Organizr
   location: /
-  # Muximux is running on port 80 on the host but exposed through 8080 on the host
-  proxy_pass: "http://{{ muximux.name }}.{{ docker.network }}"
+  proxy_pass: "http://{{ organizr.name }}.{{ docker.network }}"
+  include:
+    - "{{ nginx.proxy.file }}"
 -
   name: NZBGet
   location: /nzbget/
@@ -21,11 +27,13 @@ services:
   include:
     - "{{ nginx.proxy.file }}"
 -
-  name: CouchPotato
-  location: /couchpotato
+  name: Radarr
+  location: /radarr
   icon:  "muximux-movie_creation"
   color: "#ff0000"
-  proxy_pass: "http://{{ couchpotato.name }}.{{ docker.network }}:{{ couchpotato.port.http }}{{ couchpotato.config.core.urlbase }}"
+  proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
+  include:
+    - "{{ nginx.proxy.file }}"
 -
 
   name: "NZB Hydra"

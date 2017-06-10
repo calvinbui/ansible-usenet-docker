@@ -2,8 +2,6 @@ server {
   listen 80 default_server;
   server_name {{ nginx.proxy.domain }};
 
-  include  {{ nginx.ldap.prompt }};
-
   location /.well-known/acme-challenge {
     default_type "text/plain";
     root {{ nginx_base }}/{{ nginx.proxy.domain }};
@@ -18,6 +16,9 @@ server {
     {% endfor %}
     {% endif %}
     proxy_pass {{ service.proxy_pass}};
+    {% if not loop.first %}
+    include  {{ nginx.ldap.prompt }};
+    {% endif %}
   }
   {% endfor %}
 }

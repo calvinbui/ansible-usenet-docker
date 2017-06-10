@@ -16,8 +16,6 @@ server {
   listen 443 ssl;
   server_name {{ nginx.proxy.domain }};
 
-  include  {{ nginx.ldap.prompt }};
-
   ssl_certificate_key {{ nginx.certs.remote_directory }}/config/live/{{ nginx.proxy.domain }}/privkey.pem;
   ssl_certificate {{ nginx.certs.remote_directory}}/config/live/{{ nginx.proxy.domain }}/fullchain.pem;
 
@@ -30,6 +28,9 @@ server {
     {% endfor %}
     {% endif %}
     proxy_pass {{ service.proxy_pass}};
+    {% if not loop.first %}
+    include  {{ nginx.ldap.prompt }};
+    {% endif %}
   }
   {% endfor %}
 }
