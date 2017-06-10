@@ -19,6 +19,7 @@
     - nginx-docker
     - letsencrypt-docker
     - backstroke
+    - watchtower-docker
     # - freenas-permissions
     # - centos-setup
     # - couchpotato-docker

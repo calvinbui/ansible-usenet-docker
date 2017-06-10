@@ -1,0 +1,5 @@
+---
+
+watchtower:
+  name: watchtower
+  image: v2tec/watchtower

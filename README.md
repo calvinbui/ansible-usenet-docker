@@ -13,9 +13,20 @@
 
 ## About
 
-This is an Ansible playbook which installs my Usenet services in Docker containers on a Ubuntu server.
+This is an Ansible playbook which installs my Usenet services in Docker containers on a Ubuntu server. Each Usenet service is an Ansible role.
 
-The playbook:
+The following roles are available:
+
+-   NZBGet
+-   Transmission
+-   NZBHydra
+-   Sonarr
+-   Radarr
+-   CouchPotato
+-   Muximux
+-   Organizr
+
+The playbook does the following:
 
 -   Performs a simple setup of a new host (dist-upgrade and open-vm-tools)
 -   Sets up a NFS mount
@@ -25,6 +36,8 @@ The playbook:
 -   Installs NGINX with LDAP authentication to proxy those services
 -   Installs Organizr or Muximux to provide easy access to those services
 -   Generate certificates using Let's Encrypt on the Docker host (not container) and links the certificates to the sites
+-   Add backstroke.us links to crontab
+-   Installs Watchtower to update images automatically
 
 ## Commands
 
@@ -36,7 +49,13 @@ SSH Password is stored in group_vars.
 
 Set vault password through ANSIBLE_VAULT_PASSWORD_FILE=~/.vault_pass.txt
 
+## Automatically Updating Images
+
+[Watchtower](https://hub.docker.com/r/v2tec/watchtower/) is used to monitor running Docker containers and watch for changes to the images that those containers were originally started from. If Watchtower detects that an image has changed, it will automatically restart the container using the new image.
+
+For problematic images that have been forked and edited (NZBGet and Transmission), [Backstroke](https://backstroke.us) keeps their repositories up to date with their respective upstreams. A cron job is created to lookup new changes and raise pull requests if there are any changes. From here, Docker Hub will automatically build the new image as it is a service linked in GitHub.
+
 ## TODO
 
--   Auto-upgrade images using Watch Tower. Will have to combine with gotcha's above. (transform into scripts?)
--   401 Error Page
+-   401 Error Page, most likely have to use official NGINX LDAP Auth.
+-   Move variables so that single roles can run without depending on other role variables 
