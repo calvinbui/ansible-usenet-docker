@@ -1,0 +1,11 @@
+---
+
+- name: Add backstroke.us links to crontab
+  cron:
+    name: "Check {{ item.name }} for updates"
+    minute: "0"
+    hour: "7"
+    state: present
+    job: "curl -s -m 120 -X POST {{ item.url }}"
+  with_items:
+    - "{{ backstroke_urls }}"

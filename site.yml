@@ -18,6 +18,7 @@
     - organizr-docker
     - nginx-docker
     - letsencrypt-docker
+    - backstroke
     # - freenas-permissions
     # - centos-setup
     # - couchpotato-docker
