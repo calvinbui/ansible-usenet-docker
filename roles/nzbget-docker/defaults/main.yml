@@ -39,7 +39,7 @@ nzbget:
       encryption: "yes"
       cipher: "RC4-SHA"
       connections: 50
-      retention: 600
+      retention: 1000
     security:
       username: ""
       password: ""
