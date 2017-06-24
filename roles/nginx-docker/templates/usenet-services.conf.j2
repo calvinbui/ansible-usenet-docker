@@ -12,7 +12,7 @@ server {
   location {{ service.location}} {
     {% if service.include is defined %}
     {% for item in service.include %}
-    include {{ item }};
+    {{ item }};
     {% endfor %}
     {% endif %}
     proxy_pass {{ service.proxy_pass}};

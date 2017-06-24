@@ -19,7 +19,6 @@ services:
   location: /sonarr
   proxy_pass: "http://{{ sonarr.name }}.{{ docker.network }}:{{ sonarr.port.http }}{{ sonarr.config.urlbase }}"
   include:
-    - "{{ nginx.proxy.file }}"
 # -
 #   name: Radarr
 #   location: /radarr
@@ -28,6 +27,7 @@ services:
 #   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
 #   include:
 #     - "{{ nginx.proxy.file }}"
+    - "include {{ nginx.proxy.file }}"
 -
   name: "NZB Hydra"
   location: /nzbhydra
