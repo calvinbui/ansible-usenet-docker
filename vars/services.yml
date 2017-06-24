@@ -26,16 +26,15 @@ services:
   proxy_pass: "http://{{ sonarr.name }}.{{ docker.network }}:{{ sonarr.port.http }}{{ sonarr.config.urlbase }}"
   include:
     - "{{ nginx.proxy.file }}"
+# -
+#   name: Radarr
+#   location: /radarr
+#   icon:  "muximux-movie_creation"
+#   color: "#ff9900"
+#   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
+#   include:
+#     - "{{ nginx.proxy.file }}"
 -
-  name: Radarr
-  location: /radarr
-  icon:  "muximux-movie_creation"
-  color: "#ff0000"
-  proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
-  include:
-    - "{{ nginx.proxy.file }}"
--
-
   name: "NZB Hydra"
   location: /nzbhydra
   icon:  "muximux-nzbhydra"
@@ -47,11 +46,11 @@ services:
   icon:  "muximux-transmission"
   color: "#000000"
   proxy_pass: "http://{{ transmission.name }}.{{ docker.network }}:{{ transmission.port.web }}"
-# -
-#   name: Radarr
-#   location: /radarr
-#   icon:  "muximux-movie_creation"
-#   color: "#ff9900"
-#   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
-#   include:
-#     - "{{ nginx.proxy.file }}"
+-
+  name: CouchPotato
+  location: /couchpotato
+  icon:  "muximux-movie_creation"
+  color: "#ff0000"
+  proxy_pass: "http://{{ couchpotato.name }}.{{ docker.network }}:{{ couchpotato.port.http }}{{ couchpotato.config.core.urlbase }}"
+  include:
+    - "{{ nginx.proxy.file }}"
