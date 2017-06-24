@@ -14,7 +14,7 @@
     - transmission-docker
     - nzbhydra-docker
     - sonarr-docker
-    - radarr-docker
+    - couchpotato-docker
     - organizr-docker
     - nginx-docker
     - letsencrypt-docker
@@ -23,7 +23,6 @@
     # - portainer-docker
     # - freenas-permissions
     # - centos-setup
-    # - couchpotato-docker
     # - muximux-docker
 
 # Just for setting IP addresses
