@@ -10,8 +10,6 @@ services:
   name: Organizr
   location: /
   proxy_pass: "http://{{ organizr.name }}.{{ docker.network }}"
-  include:
-    - "{{ nginx.proxy.file }}"
 -
   name: NZBGet
   location: /nzbget/
@@ -52,5 +50,3 @@ services:
   icon:  "muximux-movie_creation"
   color: "#ff0000"
   proxy_pass: "http://{{ couchpotato.name }}.{{ docker.network }}:{{ couchpotato.port.http }}{{ couchpotato.config.core.urlbase }}"
-  include:
-    - "{{ nginx.proxy.file }}"
