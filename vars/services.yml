@@ -40,3 +40,18 @@ services:
 #   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
 #   include:
 #     - "{{ nginx.proxy.file }}"
+# -
+#   name: Portainer
+#   location: /portainer/
+#   proxy_pass: "http://{{ portainer.name }}.{{ docker.network }}:{{ portainer.port.http }}"
+#   include:
+#     - 'proxy_http_version 1.1'
+#     - 'proxy_set_header Connection ""'
+# -
+#   name: Portainer Web Socket
+#   location: /portainer/api/websocket/
+#   proxy_pass: "http://{{ portainer.name }}.{{ docker.network }}/api/websocket/:{{ portainer.port.http }}"
+#   include:
+#     - 'proxy_set_header Upgrade $http_upgrade'
+#     - 'proxy_set_header Connection "upgrade"'
+#     - 'proxy_http_version 1.1'

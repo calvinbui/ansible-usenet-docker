@@ -1,0 +1,9 @@
+---
+
+portainer:
+  name: portainer
+  image: portainer/portainer
+  port:
+    http: 9000
+  config:
+    directory: "{{ base_folder }}/portainer"

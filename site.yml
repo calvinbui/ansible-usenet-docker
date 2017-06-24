@@ -20,6 +20,7 @@
     - letsencrypt-docker
     - backstroke
     - watchtower-docker
+    # - portainer-docker
     # - freenas-permissions
     # - centos-setup
     # - couchpotato-docker
