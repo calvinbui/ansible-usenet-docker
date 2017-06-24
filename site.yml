@@ -20,7 +20,12 @@
     - letsencrypt-docker
     - backstroke
     - watchtower-docker
+
+    # Testing
     # - portainer-docker
+    # - radarr-docker
+
+    # Old
     # - freenas-permissions
     # - centos-setup
     # - muximux-docker
