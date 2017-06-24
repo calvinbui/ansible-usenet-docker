@@ -19,14 +19,6 @@ services:
   location: /sonarr
   proxy_pass: "http://{{ sonarr.name }}.{{ docker.network }}:{{ sonarr.port.http }}{{ sonarr.config.urlbase }}"
   include:
-# -
-#   name: Radarr
-#   location: /radarr
-#   icon:  "muximux-movie_creation"
-#   color: "#ff9900"
-#   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
-#   include:
-#     - "{{ nginx.proxy.file }}"
     - "include {{ nginx.proxy.file }}"
 -
   name: "NZB Hydra"
@@ -40,3 +32,11 @@ services:
   name: CouchPotato
   location: /couchpotato
   proxy_pass: "http://{{ couchpotato.name }}.{{ docker.network }}:{{ couchpotato.port.http }}{{ couchpotato.config.core.urlbase }}"
+# -
+#   name: Radarr
+#   location: /radarr
+#   icon:  "muximux-movie_creation"
+#   color: "#ff9900"
+#   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
+#   include:
+#     - "{{ nginx.proxy.file }}"
