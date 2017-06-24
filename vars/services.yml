@@ -13,14 +13,10 @@ services:
 -
   name: NZBGet
   location: /nzbget/
-  icon:  "muximux-download"
-  color: "#ffffff"
   proxy_pass: "http://{{ nzbget.name }}.{{ docker.network }}:{{ nzbget.port.http}}"
 -
   name: Sonarr
   location: /sonarr
-  icon:  "muximux-sonarr"
-  color: "#35c5f4"
   proxy_pass: "http://{{ sonarr.name }}.{{ docker.network }}:{{ sonarr.port.http }}{{ sonarr.config.urlbase }}"
   include:
     - "{{ nginx.proxy.file }}"
@@ -35,18 +31,12 @@ services:
 -
   name: "NZB Hydra"
   location: /nzbhydra
-  icon:  "muximux-nzbhydra"
-  color: "#108f34"
   proxy_pass: "http://{{ nzbhydra.name }}.{{ docker.network}}:{{ nzbhydra.port }}{{ nzbhydra.config.main.urlBase }}"
 -
   name: Transmission
   location: /transmission
-  icon:  "muximux-transmission"
-  color: "#000000"
   proxy_pass: "http://{{ transmission.name }}.{{ docker.network }}:{{ transmission.port.web }}"
 -
   name: CouchPotato
   location: /couchpotato
-  icon:  "muximux-movie_creation"
-  color: "#ff0000"
   proxy_pass: "http://{{ couchpotato.name }}.{{ docker.network }}:{{ couchpotato.port.http }}{{ couchpotato.config.core.urlbase }}"
