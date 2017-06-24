@@ -28,7 +28,7 @@ server {
     {% endfor %}
     {% endif %}
     proxy_pass {{ service.proxy_pass}};
-    {% if not loop.first %}
+    {% if service.name != "Organizr" %}
     include  {{ nginx.ldap.prompt }};
     {% endif %}
   }
