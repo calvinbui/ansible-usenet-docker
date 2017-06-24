@@ -1,6 +1,6 @@
 <?php
 return array(
-	'CONFIG_VERSION' => '1.35',
+	'CONFIG_VERSION' => '1.36',
 	'authBackend' => '{{ organizr.config.auth.backend }}',
 	'authBackendCreate' => 'true',
 	'authBackendDomain' => '{{ organizr.config.auth.domain }}',
@@ -14,12 +14,24 @@ return array(
 	'homepageCustomHTML1Auth' => 'false',
 	'notifyEffect' => 'attached-flip',
 	'nzbgetHomeAuth' => 'false',
-	'nzbgetURL' => 'http://{{ nzbget.name }}.{{ docker.network }}:{{ nzbget.port.http}}',
+	{% for service in services %}
+	{% if service.name == "NZBGet"  %}
+	'nzbgetURL' => '{{ service.proxy_pass }}',
+	{% endif %}
+	{% endfor %}
+	{% for service in services %}
+	{% if service.name == "Radarr"  %}
 	'radarrKey' => '{{ radarr.config.apikey }}',
-	'radarrURL' => 'http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}',
+	'radarrURL' => '{{ service.proxy_pass }}',
+	{% endif %}
+	{% endfor %}
 	'slimBar' => 'true',
+	{% for service in services %}
+	{% if service.name == "Sonarr"  %}
 	'sonarrKey' => '{{ sonarr.config.apikey }}',
-	'sonarrURL' => 'http://{{ sonarr.name }}.{{ docker.network }}:{{ sonarr.port.http }}{{ sonarr.config.urlbase }}',
+	'sonarrURL' => '{{ service.proxy_pass }}',
+	{% endif %}
+	{% endfor %}
 	'speedTest' => 'false',
 	'timezone' => '{{ timezone }}',
 	'user_home' => '/config/www/users/'
