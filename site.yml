@@ -16,13 +16,13 @@
     - sonarr-docker
     - couchpotato-docker
     - organizr-docker
+    - portainer-docker
     - nginx-docker
     - letsencrypt-docker
     - backstroke
     - watchtower-docker
 
     # Testing
-    # - portainer-docker
     # - radarr-docker
 
     # Old

@@ -1,3 +1,11 @@
+{% for service in services %}
+{% if service.name == "Portainer" %}
+upstream portainer {
+    server {{ portainer.name }}.{{ docker.network }}:{{ portainer.port.http }};
+}
+{% endif %}
+{% endfor %}
+
 server {
   listen 80 default_server;
   server_name {{ nginx.proxy.domain }};
