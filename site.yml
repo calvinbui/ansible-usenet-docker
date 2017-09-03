@@ -30,8 +30,9 @@
     # - centos-setup
     # - muximux-docker
 
+## Save this for Packer
 # Just for setting IP addresses
-- hosts: new-machine
-
-  roles:
-    - static-ip
+# - hosts: new-machine
+#
+#   roles:
+#     - static-ip
