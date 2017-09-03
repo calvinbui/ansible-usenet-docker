@@ -1,6 +1,6 @@
 ---
 
-- hosts: usenet
+- hosts: usenet, vagrant
 
   vars_files:
     - vars/services.yml
