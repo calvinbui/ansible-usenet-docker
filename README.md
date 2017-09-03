@@ -25,6 +25,7 @@ The following roles are available:
 -   CouchPotato
 -   Muximux
 -   Organizr
+-   Portainer
 
 The playbook does the following:
 
@@ -55,7 +56,12 @@ Set vault password through ANSIBLE_VAULT_PASSWORD_FILE=~/.vault_pass.txt
 
 For problematic images that have been forked and edited (NZBGet and Transmission), [Backstroke](https://backstroke.us) keeps their repositories up to date with their respective upstreams. A cron job is created to lookup new changes and raise pull requests if there are any changes. From here, Docker Hub will automatically build the new image as it is a service linked in GitHub.
 
+## Testing
+
+1.  Update the `vault.txt` file
+2.  Run `vagrant up`
+
 ## TODO
 
 -   401 Error Page, most likely have to use official NGINX LDAP Auth.
--   Move variables so that single roles can run without depending on other role variables 
+-   Move variables so that single roles can run without depending on other role variables
