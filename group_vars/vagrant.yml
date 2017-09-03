@@ -1,0 +1,64 @@
+# SSH password
+ansible_ssh_pass: vagrant
+
+# sudo password
+ansible_become_pass: vagrant
+
+# the user who will be in charge of everything
+user:
+  name: vagrant
+  group: vagrant
+  uid: 1000
+  gid: 1000
+
+timezone: Australia/Sydney
+
+# The network that will be used for Docker containers to speak to one another
+docker:
+  network: vagrant.nw
+
+pushbullet:
+  api: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    66303230313962623230383430353932616466306139623562633436613165633963346236306633
+    3866303834393663356537346664656139346134353239300a346232626333383366333261356330
+    32316261393966363435653066303737666662363732393938653632623461323063653232393631
+    6434633466613962310a313039393735323035383631633830353331346263346633643463613063
+    65303161643837363561633063623035343766373835623564613931353637626631373334393839
+    6162383536623239656566333734353562666161623336353432
+
+# Path to put everything under, can be your home directory i.e. /home/calvin
+root_folder: "/"
+# The application directory, where all the roles will install to
+app_folder: "usenet"
+# Put the above two together
+base_folder: "/{{ root_folder}}/{{ app_folder }}"
+# if there are two double slashes i.e. //usenet/hdd, it is automatically ignored by Linux
+
+# The mount folder name
+mount: hdd
+# Where the NFS file share will be
+mounts_folder: "{{ base_folder }}/{{ mount }}"
+
+# NFS share settings, matches the mount command
+nfs_mount:
+  src: "10.0.9.5:/mnt/hdd/"
+  name: "{{ mounts_folder }}"
+  mode: "0771"
+  user: "{{ user.name }}"
+  group: "{{ user.group }}"
+  unit_file: "{{ app_folder }}-{{ mount }}"
+
+# the folders as a result of the NFS mount
+folders:
+  # Where downloads will be looked for
+  downloads: "{{ mounts_folder }}/Downloads"
+  # Where incomplete downloads will be
+  intermediate: "{{ mounts_folder }}/Downloads/Intermediate"
+  incomplete: "{{ mounts_folder }}/Downloads/Intermediate/Incomplete"
+  # where nzb and torrent files are stored
+  watch: "{{ mounts_folder }}/Downloads/Intermediate/Watch"
+  # where TV shows will move to
+  tv: "{{ mounts_folder }}/TV"
+  # where Movies will move to
+  movies: "{{ mounts_folder }}/Movies"

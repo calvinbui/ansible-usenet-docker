@@ -1,5 +1,6 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/trusty64"
+    config.vm.define "ansible-usenet-docker"
 
     config.vm.network "private_network", ip: "172.16.0.2"
     config.vm.network "forwarded_port", guest: 80, host: 80 # nginx
@@ -22,6 +23,9 @@ Vagrant.configure("2") do |config|
     config.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "site.yml"
       ansible.vault_password_file = "/tmp/vault.txt"
+      ansible.groups = {
+        "vagrant" => ["ansible-usenet-docker"]
+      }
     end
 
 end
