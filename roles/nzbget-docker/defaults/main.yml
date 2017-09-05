@@ -62,6 +62,15 @@ nzbget:
     script:
       scriptpausequeue: "yes"
     categories:
-      - { number: "1", name: "Movies", destdir: "Movies", aliases: "movies*" }
-      - { number: "2", name: "TV", destdir: "TV", aliases: "TV*" }
-      - { number: "3", name: "Games", destdir: "Games", aliases: "Games, Wii" }
+      one:
+        name: "Movies"
+        destdir: "Movies"
+        aliases: "movies*"
+      two:
+        name: "TV"
+        destdir: "TV"
+        aliases: "TV*"
+      three:
+        name: "Games"
+        destdir: "Games"
+        aliases: "Games, Wii"

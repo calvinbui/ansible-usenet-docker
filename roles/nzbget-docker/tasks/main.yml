@@ -1,20 +1,122 @@
 ---
 
-- name: Create NZBGet config folder
-  file:
-    path: "{{ nzbget.config.directory }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
+# - name: Create NZBGet config folder
+#   file:
+#     path: "{{ nzbget.config.directory }}"
+#     state: directory
+#     owner: "{{ user.name }}"
+#     group: "{{ user.group }}"
+#     mode: "0771"
+#   become: true
 
-- name: Copy NZBGet configuration
-  template:
-    src: nzbget.conf.j2
+# - name: Copy NZBGet configuration
+#   template:
+#     src: nzbget.conf.j2
+#     dest: "{{ nzbget.config.directory }}/nzbget.conf"
+
+- name: Pull and run NZBGet image
+  docker_container:
+    name: "{{ nzbget.name }}"
+    image: "{{ nzbget.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ nzbget.port.http }}:{{ nzbget.port.http }}"
+    volumes:
+      - "{{ nzbget.config.directory }}:/config"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+- name: NZBGet configuration
+  lineinfile:
     dest: "{{ nzbget.config.directory }}/nzbget.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+  - regexp: "^MainDir="
+    line: "MainDir={{ nzbget.config.MainDir }}"
+  - regexp: "^DestDir="
+    line: "DestDir={{ nzbget.config.DestDir }}"
+  - regexp: "^InterDir="
+    line: "InterDir={{ nzbget.config.InterDir }}"
+  - regexp: "^NzbDir="
+    line: "NzbDir={{ nzbget.config.NzbDir }}"
+  - regexp: "^QueueDir="
+    line: "QueueDir={{ nzbget.config.QueueDir }}"
+  - regexp: "^TempDir="
+    line: "TempDir={{ nzbget.config.TempDir }}"
+  - regexp: "^ScriptDir="
+    line: "ScriptDir={{ nzbget.config.ScriptDir }}"
+  - regexp: "^LockFile="
+    line: "LockFile={{ nzbget.config.LockFile }}"
+  - regexp: "^LogFile="
+    line: "LogFile={{ nzbget.config.LogFile }}"
+  - regexp: "^Server1.Name="
+    line: "Server1.Host={{ nzbget.config.server.name }}"
+  - regexp: "^Server1.Host="
+    line: "Server1.Host={{ nzbget.config.server.host }}"
+  - regexp: "^Server1.Port="
+    line: "Server1.Port={{ nzbget.config.server.port }}"
+  - regexp: "^Server1.Username="
+    line: "Server1.Username={{ nzbget.config.server.username }}"
+  - regexp: "^Server1.Password="
+    line: "Server1.Password={{ nzbget.config.server.password }}"
+  - regexp: "^Server1.Encryption="
+    line: "Server1.Encryption={{ nzbget.config.server.encryption }}"
+  - regexp: "^Server1.Cipher="
+    line: "Server1.Cipher={{ nzbget.config.server.cipher }}"
+  - regexp: "^Server1.Connections="
+    line: "Server1.Connections={{ nzbget.config.server.connections }}"
+  - regexp: "^Server1.Retention="
+    line: "Server1.Retention={{ nzbget.config.server.retention }}"
+  - regexp: "^ControlUsername="
+    line: "ControlUsername={{ nzbget.config.security.username }}"
+  - regexp: "^ControlPassword="
+    line: "ControlPassword={{ nzbget.config.security.password }}"
+  - regexp: "^Category1.Name="
+    line: "Category1.Name={{ nzbget.config.categories.one.name }}"
+  - regexp: "^Category1.DestDir="
+    line: "Category1.DestDir={{ nzbget.config.categories.one.destdir }}"
+  - regexp: "^Category1.Unpack="
+    line: "Category1.Unpack=yes"
+  - regexp: "^Category1.Aliases="
+    line: "Category1.Aliases={{ nzbget.config.categories.one.aliases }}"
+  - regexp: "^Category2.Name="
+    line: "Category2.Name={{ nzbget.config.categories.two.name }}"
+  - regexp: "^Category2.DestDir="
+    line: "Category2.DestDir={{ nzbget.config.categories.two.destdir }}"
+  - regexp: "^Category2.Unpack="
+    line: "Category2.Unpack=yes"
+  - regexp: "^Category2.Aliases="
+    line: "Category2.Aliases={{ nzbget.config.categories.two.aliases }}"
+  - regexp: "^Category3.Name="
+    line: "Category3.Name={{ nzbget.config.categories.three.name }}"
+  - regexp: "^Category3.DestDir="
+    line: "Category3.DestDir={{ nzbget.config.categories.three.destdir }}"
+  - regexp: "^Category3.Unpack="
+    line: "Category3.Unpack=yes"
+  - regexp: "^Category3.Aliases="
+    line: "Category3.Aliases={{ nzbget.config.categories.three.aliases }}"
+  - regexp: "^DupeCheck="
+    line: "DupeCheck={{ nzbget.config.incoming.dupecheck }}"
+  - regexp: "^PostStrategy="
+    line: "PostStrategy={{ nzbget.config.queue.poststrategy }}"
+  - regexp: "^DownloadRate="
+    line: "DownloadRate={{ nzbget.config.connection.downloadrate }}"
+  - regexp: "^ParPauseQueue="
+    line: "ParPauseQueue={{ nzbget.config.checkandrepair.parpausequeue }}"
+  - regexp: "^UnpackPauseQueue="
+    line: "UnpackPauseQueue={{ nzbget.config.unpack.unpackpausequeue }}"
+  - regexp: "^ScriptPauseQueue="
+    line: "ScriptPauseQueue={{ nzbget.config.script.scriptpausequeue }}"
 
-- name: Pull NZBGet image
+- name: Restart NZBGet image
   docker_container:
     name: "{{ nzbget.name }}"
     image: "{{ nzbget.image }}"
