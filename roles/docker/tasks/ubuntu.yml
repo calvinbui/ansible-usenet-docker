@@ -17,10 +17,7 @@
     - python-pip
 
 - name: Add Docker GPG key
-  apt_key:
-    id: 0EBFCD88
-    url: "https://download.docker.com/linux/ubuntu/gpg"
-    state: present
+  shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
   become: true
 
 - name: Add Docker Repository
