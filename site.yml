@@ -30,6 +30,20 @@
     # - centos-setup
     # - muximux-docker
 
+  post_tasks:
+    - name: Check if reboot is required
+      stat:
+        path: /var/run/reboot-required
+        get_md5: no
+      register: reboot_required
+    - name: Restart if reboot is required
+      shell: sleep 2 && reboot
+      async: 1
+      poll: 0
+      ignore_errors: true
+      become: true
+      when: reboot_required.stat.exists == true
+
 ## Save this for Packer
 # Just for setting IP addresses
 # - hosts: new-machine
