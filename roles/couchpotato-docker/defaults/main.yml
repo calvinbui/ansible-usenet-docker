@@ -20,7 +20,7 @@ couchpotato:
       dark_theme: 1
       launch_browser: 0
       dereferrer: ""
-      urlbase: "{{ global.couchpotato.config.urlbase }}"
+      urlbase: "{{ global.couchpotato.config.core.urlbase }}"
       show_wizard: 0
     manage:
       library_refresh_interval: 24
