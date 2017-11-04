@@ -37,9 +37,13 @@
 
 - name: Wait until the Sonarr to start successfully
   wait_for:
-    path: "{{ sonarr.config.directory }}/logs/sonarr.txt"
-    state: present
-    search_regex: "Starting Web Server"
+    timeout: 20
+  delegate_to: localhost
+
+- name: Stop Sonarr to change configuration
+  docker_container:
+    name: "{{ sonarr.name }}"
+    state: stopped
 
 # Some require colons to differentitate from '-enabled' for regex
 - name: Edit Sonarr configuration

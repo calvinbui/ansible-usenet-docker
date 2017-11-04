@@ -33,11 +33,16 @@
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
 
-- name: Wait until the Transmission settings file is present before continuing
+- name: Wait until the NZBGet to start successfully
   wait_for:
-    path: "{{ nzbget.config.directory }}/nzbget.conf"
-    state: present
-  
+    timeout: 10
+  delegate_to: localhost
+
+- name: Stop NZBGet to change configuration
+  docker_container:
+    name: "{{ nzbget.name }}"
+    state: stopped
+
 - name: NZBGet configuration
   lineinfile:
     dest: "{{ nzbget.config.directory }}/nzbget.conf"

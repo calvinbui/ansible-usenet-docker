@@ -14,7 +14,7 @@
 #     src: config.ini.j2
 #     dest: "{{ couchpotato.config.directory }}/config.ini"
 
-- name: Pull Couchpotato image
+- name: Pull CouchPotato image
   docker_container:
     name: "{{ couchpotato.name }}"
     image: "{{ couchpotato.image }}"
@@ -36,9 +36,8 @@
 
 - name: Wait until the CouchPotato to start successfully
   wait_for:
-    path: "{{ couchpotato.config.directory }}/data/logs/CouchPotato.log"
-    search_regex: "Starting server on port"
-    state: present
+    timeout: 10
+  delegate_to: localhost
 
 - name: Stop CouchPotato to change configuration
   docker_container:
@@ -170,7 +169,7 @@
     option: 'cron_minute'
     value: '{{ couchpotato.config.moviesearcher.cron_minute }}'
 
-- name: Restart Couchpotato image
+- name: Restart CouchPotato image
   docker_container:
     name: "{{ couchpotato.name }}"
     image: "{{ couchpotato.image }}"

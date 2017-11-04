@@ -38,8 +38,8 @@
 
 - name: Wait until the Transmission settings file is present before continuing
   wait_for:
-    path: "{{ transmission.config.directory }}/settings.json"
-    state: present
+    timeout: 10
+  delegate_to: localhost
 
 - name: Stop Transmission to change configuration
   docker_container:
