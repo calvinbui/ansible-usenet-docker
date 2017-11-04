@@ -1,7 +1,7 @@
 ---
 
 organizr:
-  name: organizr
+  name: "{{ global.organizr.name }}"
   image: lsiocommunity/organizr
   port:
     http: 8083

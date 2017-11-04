@@ -1,9 +1,9 @@
 ---
 
 portainer:
-  name: portainer
+  name: "{{ global.portainer.name }}"
   image: portainer/portainer
   port:
-    http: 9000
+    http: "{{ global.portainer.port.http }}"
   config:
     directory: "{{ base_folder }}/portainer"

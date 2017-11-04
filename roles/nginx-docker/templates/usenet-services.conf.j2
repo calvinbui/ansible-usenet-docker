@@ -1,7 +1,7 @@
 {% for service in services %}
 {% if service.name == "Portainer" %}
 upstream portainer {
-    server {{ portainer.name }}.{{ docker.network }}:{{ portainer.port.http }};
+    server {{ global.portainer.name }}.{{ docker.network }}:{{ global.portainer.port.http }};
 }
 {% endif %}
 {% endfor %}
