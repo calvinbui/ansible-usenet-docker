@@ -15,6 +15,7 @@
     - nzbhydra-docker
     - sonarr-docker
     - couchpotato-docker
+    - jdownloader-docker
     - organizr-docker
     - portainer-docker
     - nginx-docker

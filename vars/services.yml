@@ -61,6 +61,10 @@ global:
     name: portainer
     port:
       http: 9000
+  jdownloader:
+    name: jdownloader
+    port:
+      http: 5800
 
 services:
 # -
@@ -94,6 +98,24 @@ services:
   name: CouchPotato
   location: /couchpotato
   proxy_pass: "http://{{ global.couchpotato.name }}.{{ docker.network }}:{{ global.couchpotato.port.http }}{{ global.couchpotato.config.core.urlbase }}"
+-
+  name: JDownloader
+  location: /jdownloader/
+  proxy_pass: "http://{{ global.jdownloader.name }}.{{ docker.network }}:{{ global.jdownloader.port.http }}/"
+  include:
+    - 'proxy_set_header Upgrade $http_upgrade'
+    - 'proxy_set_header Connection "upgrade"'
+    - 'proxy_http_version 1.1'
+-
+  name: JDownloader Websocket
+  location: /websockify
+  proxy_pass: "http://{{ global.jdownloader.name }}.{{ docker.network }}:{{ global.jdownloader.port.http }}/websockify"
+  include:
+    - 'proxy_set_header Upgrade $http_upgrade'
+    - 'proxy_set_header Connection "upgrade"'
+    - 'proxy_http_version 1.1'
+    - 'proxy_read_timeout 61s'
+    - 'proxy_buffering off'
 -
   name: Portainer
   location: /portainer/

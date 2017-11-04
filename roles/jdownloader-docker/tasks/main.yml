@@ -1,0 +1,23 @@
+---
+
+- name: Make logs directory
+  file:
+    path: "{{ jdownloader.config.directory }}/logs"
+    state: directory
+
+- name: Pull JDownloader 2 image
+  docker_container:
+    name: "{{ jdownloader.name }}"
+    image: "{{ jdownloader.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ jdownloader.config.port.http }}:5800"
+      - "{{ jdownloader.config.port.vnc }}:5900"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ jdownloader.config.directory }}:/config:rw"
+      - "{{ folders.downloads }}:/output:rw"

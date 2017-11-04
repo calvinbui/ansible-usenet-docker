@@ -1,0 +1,10 @@
+---
+
+jdownloader:
+  name: "{{ global.jdownloader.name }}"
+  image: calvinbui/docker-jdownloader-2
+  config:
+    directory: "{{ base_folder }}/jdownloader"
+    port:
+      http: "{{ global.jdownloader.port.http }}"
+      vnc: 5900
