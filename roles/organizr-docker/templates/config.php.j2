@@ -28,7 +28,7 @@ return array(
 	'slimBar' => 'true',
 	{% for service in services %}
 	{% if service.name == "Sonarr"  %}
-	'sonarrKey' => '{{ sonarr.config.apikey }}',
+	'sonarrKey' => '{{ global.sonarr.config.apikey }}',
 	'sonarrURL' => '{{ service.proxy_pass }}',
 	{% endif %}
 	{% endfor %}

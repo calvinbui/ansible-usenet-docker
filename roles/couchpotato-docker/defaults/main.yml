@@ -1,10 +1,10 @@
 ---
 
 couchpotato:
-  name: couchpotato
+  name: "{{ global.couchpotato.name }}"
   image: linuxserver/couchpotato
   port:
-    http: 5050
+    http: "{{ global.couchpotato.port.http }}"
     https: 5151
   config:
     directory: "{{ base_folder }}/couchpotato"
@@ -20,7 +20,7 @@ couchpotato:
       dark_theme: 1
       launch_browser: 0
       dereferrer: ""
-      urlbase: /couchpotato
+      urlbase: "{{ global.couchpotato.config.urlbase }}"
       show_wizard: 0
     manage:
       library_refresh_interval: 24
