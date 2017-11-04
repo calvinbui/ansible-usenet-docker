@@ -1,20 +1,87 @@
 ---
 
-- name: Create Transmission config folder
-  file:
-    path: "{{ transmission.config.directory }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Copy Transmission configuration
-  template:
-    src: settings.json.j2
-    dest: "{{ transmission.config.directory }}/settings.json"
+# - name: Create Transmission config folder
+#   file:
+#     path: "{{ transmission.config.directory }}"
+#     state: directory
+#     owner: "{{ user.name }}"
+#     group: "{{ user.group }}"
+#     mode: "0771"
+#   become: true
+#
+# - name: Copy Transmission configuration
+#   template:
+#     src: settings.json.j2
+#     dest: "{{ transmission.config.directory }}/settings.json"
 
 - name: Pull Transmission image
+  docker_container:
+    name: "{{ transmission.name }}"
+    image: "{{ transmission.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ transmission.port.web }}:{{ transmission.port.web }}"
+      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}"
+      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}/udp"
+    volumes:
+      - "{{ transmission.config.directory }}:/config"
+      - "{{ folders.downloads }}:/downloads"
+      - "{{ folders.watch }}:/watch"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+# Some require colons to differentitate from '-enabled' for regex
+- name: Copy Transmission configuration
+  lineinfile:
+    dest: "{{ transmission.config.directory }}/settings.json"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs:
+  with_items:
+  - regexp: 'download-dir'
+    line: '"download-dir": "{{  transmission.config.download_dir }}",'
+  - regexp: 'idle-seeding-limit-enabled'
+    line: '"idle-seeding-limit-enabled": {{ transmission.config.idle_seeding_limit_enabled }},'
+  - regexp: 'idle-seeding-limit\":'
+    line: '"idle-seeding-limit": {{ transmission.config.idle_seeding_limit }},'
+  - regexp: 'incomplete-dir\":'
+    line: '"incomplete-dir": "{{ transmission.config.incomplete_dir }}",'
+  - regexp: 'lpd-enabled'
+    line: '"lpd-enabled": {{ transmission.config.ldp_enabled }},'
+  - regexp: 'peer-limit-global'
+    line: '"peer-limit-global": {{ transmission.config.peer_limit_global }},'
+  - regexp: 'peer-limit-per-torrent'
+    line: '"peer-limit-per-torrent": {{ transmission.config.peer_limit_per_torrent }},'
+  - regexp: 'peer-port\":'
+    line: '"peer-port": {{ transmission.config.peer_port }},'
+  - regexp: 'peer-port-random-on-start'
+    line: '"peer-port-random-on-start": {{ transmission.config.peer_port_random_on_start }},'
+  - regexp: 'ratio-limit\":'
+    line: '"ratio-limit": {{ transmission.config.ratio_limit }},'
+  - regexp: 'ratio-limit-enabled'
+    line: '"ratio-limit-enabled": {{ transmission.config.ratio_limit_enabled }},'
+  - regexp: 'rpc-password'
+    line: '"rpc-password": "{{ transmission.config.rpc_password }}",'
+  - regexp: 'rpc-port'
+    line: '"rpc-port": {{ transmission.port.web }},'
+  - regexp: 'rpc-url'
+    line: '"rpc-url": "{{ transmission.config.rpc_url }}",'
+  - regexp: 'rpc-username'
+    line: '"rpc-username": "{{ transmission.config.rpc_username }}",'
+  - regexp: 'rpc-whitelist\":'
+    line: '"rpc-whitelist": "{{ transmission.config.rpc_whitelist }}",'
+  - regexp: 'speed-limit-down\":'
+    line: '"speed-limit-down": {{ transmission.config.speed_limit_down }},'
+  - regexp: 'speed-limit-down-enabled'
+    line: '"speed-limit-down-enabled": {{ transmission.config.speed_limit_enabled }},'
+
+- name: Restart Transmission image
   docker_container:
     name: "{{ transmission.name }}"
     image: "{{ transmission.image }}"
