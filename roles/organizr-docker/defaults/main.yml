@@ -11,3 +11,5 @@ organizr:
       backend: ldap
       domain: home
       host: "ldap://10.0.9.10:389"
+    database: /config/www/
+    user_home: /config/www/users/

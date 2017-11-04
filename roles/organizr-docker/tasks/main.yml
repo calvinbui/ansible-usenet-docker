@@ -1,20 +1,83 @@
 ---
 
-- name: Create Organizr config folder
-  file:
-    path: "{{ organizr.config.directory }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Copy configuration file
-  template:
-    src: config.php.j2
-    dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
+# - name: Create Organizr config folder
+#   file:
+#     path: "{{ organizr.config.directory }}"
+#     state: directory
+#     owner: "{{ user.name }}"
+#     group: "{{ user.group }}"
+#     mode: "0771"
+#   become: true
+#
+# - name: Copy configuration file
+#   template:
+#     src: config.php.j2
+#     dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
 
 - name: Pull Organizr image
+  docker_container:
+    name: "{{ organizr.name }}"
+    image: "{{ organizr.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ organizr.port.http }}:80"
+    volumes:
+      - "{{ organizr.config.directory }}:/config"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+
+- name: Wait for Organizr to start
+  wait_for:
+    timeout: 10
+  delegate_to: localhost
+
+- name: Stop Organizr to change configuration
+  docker_container:
+    name: "{{ organizr.name }}"
+    state: stopped
+
+- name: Copy the default config file
+  copy:
+    src: "{{ organizr.config.directory }}/www/Dashboard/config/configDefaults.php"
+    dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
+    remote_src: yes
+
+- name: Edit Organizr configuration
+  lineinfile:
+    dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs:
+  with_items:
+  - regexp: 'database_Location'
+    line: '"database_Location" => "{{ organizr.config.database }}",'
+  - regexp: 'user_home'
+    line: '"user_home" => "{{ organizr.config.user_home }}",'
+  - regexp: 'authBackend'
+    line: '"authBackend" => "{{ organizr.config.auth.backend }}",'
+  - regexp: 'authBackendDomain'
+    line: '"authBackendDomain" => "{{ organizr.config.auth.domain }}",'
+  - regexp: 'authBackendHost'
+    line: '"authBackendHost" => "{{ organizr.config.auth.host }}",'
+  - regexp: 'nzbgetURL'
+    line: '"nzbgetURL" => "http://{{ global.nzbget.name }}.{{ docker.network }}:{{ global.nzbget.port.http}}",'
+  - regexp: 'sonarrKey'
+    line: '"sonarrKey" => "{{ global.sonarr.config.apikey }}",'
+  - regexp: 'sonarrURL'
+    line: '"sonarrURL" => "http://{{ global.sonarr.name }}.{{ docker.network }}:{{ global.sonarr.port.http }}{{ global.sonarr.config.urlbase }}",'
+  - regexp: 'timezone'
+    line: '"timezone" => "{{ timezone }}",'
+  - regexp: 'couchURL'
+    line: '"couchURL" => "http://{{ global.couchpotato.name }}.{{ docker.network }}:{{ global.couchpotato.port.http }}{{ global.couchpotato.config.core.urlbase }}",'
+  - regexp: 'couchAPI'
+    line: '"couchAPI" => "{{ global.couchpotato.config.core.apikey }}",'
+
+- name: Restart Organizr image
   docker_container:
     name: "{{ organizr.name }}"
     image: "{{ organizr.image }}"
