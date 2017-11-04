@@ -34,7 +34,7 @@
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
 
-- name: Wait until the CouchPotato settings file is present before continuing
+- name: Wait until the CouchPotato to start successfully
   wait_for:
     path: "{{ couchpotato.config.directory }}/data/logs/CouchPotato.log"
     search_regex: "Starting server on port"

@@ -35,7 +35,7 @@
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
 
-- name: Wait until the Sonarr configuration file is present before continuing
+- name: Wait until the Sonarr to start successfully
   wait_for:
     path: "{{ sonarr.config.directory }}/logs/sonarr.txt"
     state: present
