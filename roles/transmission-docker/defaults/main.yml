@@ -1,10 +1,10 @@
 ---
 
 transmission:
-  name: transmission
+  name: "{{ global.transmission.name }}"
   image: calvinbui/docker-transmission
   port:
-    web: 9091
+    web: "{{ global.transmission.port.web }}"
     listen: 51413
   config:
     directory: "{{ base_folder }}/transmission"

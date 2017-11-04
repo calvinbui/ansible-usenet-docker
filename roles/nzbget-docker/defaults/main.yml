@@ -1,11 +1,11 @@
 ---
 
 nzbget:
-  name: nzbget
+  name: "{{ global.nzbget.name }}"
   # Docker image
   image: calvinbui/docker-nzbget
   port:
-    http: 6789
+    http: "{{ global.nzbget.port.http }}"
     https: 6791
   config:
     directory: "{{ base_folder }}/nzbget"
@@ -39,7 +39,7 @@ nzbget:
       encryption: "yes"
       cipher: "RC4-SHA"
       connections: 50
-      retention: 1000
+      retention: "{{ global.nzbget.config.server.retention }}"
     security:
       username: ""
       password: ""
