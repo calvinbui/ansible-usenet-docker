@@ -1,20 +1,176 @@
 ---
 
-- name: Create Couchpotato config folder
-  file:
-    path: "{{ couchpotato.config.directory }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Copy configuration file
-  template:
-    src: config.ini.j2
-    dest: "{{ couchpotato.config.directory }}/config.ini"
+# - name: Create Couchpotato config folder
+#   file:
+#     path: "{{ couchpotato.config.directory }}"
+#     state: directory
+#     owner: "{{ user.name }}"
+#     group: "{{ user.group }}"
+#     mode: "0771"
+#   become: true
+#
+# - name: Copy configuration file
+#   template:
+#     src: config.ini.j2
+#     dest: "{{ couchpotato.config.directory }}/config.ini"
 
 - name: Pull Couchpotato image
+  docker_container:
+    name: "{{ couchpotato.name }}"
+    image: "{{ couchpotato.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ couchpotato.port.http }}:{{ couchpotato.port.http }}"
+    volumes:
+      - "{{ couchpotato.config.directory }}:/config"
+      - "{{ folders.movies }}:/movies"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+- name: Wait until the CouchPotato settings file is present before continuing
+  wait_for:
+    path: "{{ couchpotato.config.directory }}/data/logs/CouchPotato.log"
+    search_regex: "Starting server on port"
+    state: present
+
+- name: Stop CouchPotato to change configuration
+  docker_container:
+    name: "{{ couchpotato.name }}"
+    state: stopped
+
+- name: Edit CouchPotato settings
+  ini_file:
+    path: "{{ couchpotato.config.directory }}/config.ini"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+  - section: 'core'
+    option: 'api_key'
+    value: '{{ couchpotato.config.core.apikey }}'
+  - section: 'core'
+    option: 'dereferer'
+    value: '{{ couchpotato.config.core.dereferrer }}'
+  - section: 'core'
+    option: 'dark_theme'
+    value: '{{ couchpotato.config.core.dark_theme }}'
+  - section: 'core'
+    option: 'launch_browser'
+    value: '{{ couchpotato.config.core.launch_browser }}'
+  - section: 'core'
+    option: 'url_base'
+    value: '{{ couchpotato.config.core.urlbase }}'
+  - section: 'core'
+    option: 'show_wizard'
+    value: '{{ couchpotato.config.core.show_wizard }}'
+  - section: 'manage'
+    option: 'library_refresh_interval'
+    value: '{{ couchpotato.config.manage.library_refresh_interval }}'
+  - section: 'manage'
+    option: 'cleanup'
+    value: '{{ couchpotato.config.manage.cleanup }}'
+  - section: 'manage'
+    option: 'enabled'
+    value: '{{ couchpotato.config.manage.enabled }}'
+  - section: 'manage'
+    option: 'library'
+    value: '{{ couchpotato.config.manage.library }}'
+  - section: 'renamer'
+    option: 'file_name'
+    value: '{{ couchpotato.config.renamer.file_name }}'
+  - section: 'renamer'
+    option: 'nfo_name'
+    value: '{{ couchpotato.config.renamer.nfo_name }}'
+  - section: 'renamer'
+    option: 'from'
+    value: '{{ couchpotato.config.renamer.from }}'
+  - section: 'renamer'
+    option: 'to'
+    value: '{{ couchpotato.config.renamer.to }}'
+  - section: 'renamer'
+    option: 'cleanup'
+    value: '{{ couchpotato.config.renamer.cleanup }}'
+  - section: 'renamer'
+    option: 'enabled'
+    value: '{{ couchpotato.config.renamer.enabled }}'
+  - section: 'renamer'
+    option: 'unrar'
+    value: '{{ couchpotato.config.renamer.unrar }}'
+  - section: 'subtitle'
+    option: 'languages'
+    value: '{{ couchpotato.config.subtitle.languages }}'
+  - section: 'subtitle'
+    option: 'enabled'
+    value: '{{ couchpotato.config.subtitle.enabled }}'
+  - section: 'trailer'
+    option: 'enabled'
+    value: '{{ couchpotato.config.trailer.enabled }}'
+  - section: 'blackhole'
+    option: 'enabled'
+    value: '{{ couchpotato.config.blackhole.enabled }}'
+  - section: 'nzbget'
+    option: 'enabled'
+    value: '{{ couchpotato.config.nzbget.enabled }}'
+  - section: 'nzbget'
+    option: 'host'
+    value: '{{ global.nzbget.name }}.{{ docker.network }}:{{ global.nzbget.port.http }}'
+  - section: 'transmission'
+    option: 'host'
+    value: 'http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.web }}/'
+  - section: 'pushbullet'
+    option: 'api_key'
+    value: '{{ pushbullet.api }}'
+  - section: 'pushbullet'
+    option: 'enabled'
+    value: '{{ couchpotato.config.pushbullet.enabled }}'
+  - section: 'newznab'
+    option: 'use'
+    value: '{{ couchpotato.config.newznab.use }}'
+  - section: 'newznab'
+    option: 'extra_score'
+    value: '{{ couchpotato.config.newznab.extra_score }}'
+  - section: 'newznab'
+    option: 'host'
+    value: 'http://{{ global.nzbhydra.name }}.{{ docker.network}}:{{ global.nzbhydra.port }}{{ global.nzbhydra.config.main.urlBase }}'
+  - section: 'newznab'
+    option: 'custom_tag'
+    value: '{{ couchpotato.config.newznab.custom_tag }}'
+  - section: 'newznab'
+    option: 'api_key'
+    value: '{{ global.nzbhydra.config.main.apikey }}'
+  - section: 'kickasstorrents'
+    option: 'enabled'
+    value: '{{ couchpotato.config.kickasstorrents.enabled }}'
+  - section: 'torrentz'
+    option: 'enabled'
+    value: '{{ couchpotato.config.torrentz.enabled }}'
+  - section: 'searcher'
+    option: 'preferred_method'
+    value: '{{ couchpotato.config.searcher.preferred_method }}'
+  - section: 'nzb'
+    option: 'retention'
+    value: '{{ global.nzbget.config.server.retention }}'
+  - section: 'imdb'
+    option: 'chart_display_top250'
+    value: '{{ couchpotato.config.imdb.chart_display_top250 }}'
+  - section: 'imdb'
+    option: 'chart_display_theater'
+    value: '{{ couchpotato.config.imdb.chart_display_top250 }}'
+  - section: 'moviesearcher'
+    option: 'cron_hour'
+    value: '{{ couchpotato.config.moviesearcher.cron_hour }}'
+  - section: 'moviesearcher'
+    option: 'cron_minute'
+    value: '{{ couchpotato.config.moviesearcher.cron_minute }}'
+
+- name: Restart Couchpotato image
   docker_container:
     name: "{{ couchpotato.name }}"
     image: "{{ couchpotato.image }}"
