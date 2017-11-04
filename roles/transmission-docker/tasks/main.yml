@@ -36,6 +36,15 @@
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
 
+- name: Wait until the Transmission settings file is present before continuing
+  wait_for:
+    path: "{{ transmission.config.directory }}/settings.json"
+
+- name: Stop Transmission to change configuration
+  docker_container:
+    name: "{{ transmission.name }}"
+    state: stopped
+
 # Some require colons to differentitate from '-enabled' for regex
 - name: Copy Transmission configuration
   lineinfile:
