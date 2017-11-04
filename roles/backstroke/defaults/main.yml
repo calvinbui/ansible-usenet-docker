@@ -3,7 +3,10 @@
 backstroke_urls:
   -
     name: NZBGet
-    url: https://backstroke.us/_592c431464430e001ce99cc2
+    url: https://api.backstroke.co/_592c431464430e001ce99cc2
   -
     name: Transmission
-    url: https://backstroke.us/_592c45ba64430e001ce99cc5
+    url: https://api.backstroke.co/_592c45ba64430e001ce99cc5
+  -
+    name: JDownloader
+    url: https://api.backstroke.co/_4870356dc48940d9ae3cbd30e14e3fc8
