@@ -6,21 +6,21 @@
     - vars/services.yml
 
   roles:
-    # - ubuntu-setup
-    # - network-shares
-    # - docker
-    # - docker-network
+    - ubuntu-setup
+    - network-shares
+    - docker
+    - docker-network
     - nzbget-docker
-    # - transmission-docker
-    # - nzbhydra-docker
-    # - sonarr-docker
-    # - couchpotato-docker
-    # - organizr-docker
-    # - portainer-docker
-    # - nginx-docker
-    # - letsencrypt-docker
-    # - backstroke
-    # - watchtower-docker
+    - transmission-docker
+    - nzbhydra-docker
+    - sonarr-docker
+    - couchpotato-docker
+    - organizr-docker
+    - portainer-docker
+    - nginx-docker
+    - letsencrypt-docker
+    - backstroke
+    - watchtower-docker
 
     # Testing
     # - radarr-docker
