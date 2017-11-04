@@ -1,20 +1,64 @@
 ---
 
-- name: Create Sonarr config folder
-  file:
-    path: "{{ sonarr.config.directory }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
+# - name: Create Sonarr config folder
+#   file:
+#     path: "{{ sonarr.config.directory }}"
+#     state: directory
+#     owner: "{{ user.name }}"
+#     group: "{{ user.group }}"
+#     mode: "0771"
+#   become: true
 
-- name: Copy configuration file
-  template:
-    src: config.xml.j2
-    dest: "{{ sonarr.config.directory }}/config.xml"
-
+# - name: Copy configuration file
+#   template:
+#     src: config.xml.j2
+#     dest: "{{ sonarr.config.directory }}/config.xml"
+#
 - name: Pull Sonarr image
+  docker_container:
+    name: "{{ sonarr.name }}"
+    image: "{{ sonarr.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ sonarr.port.http }}:{{ sonarr.port.http }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ sonarr.config.directory }}:/config"
+      - "{{ folders.tv }}:/tv"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+
+- name: Wait until the Sonarr configuration file is present before continuing
+  wait_for:
+    path: "{{ sonarr.config.directory }}/logs/sonarr.txt"
+    state: present
+    search_regex: "Starting Web Server"
+
+# Some require colons to differentitate from '-enabled' for regex
+- name: Edit Sonarr configuration
+  lineinfile:
+    dest: "{{ sonarr.config.directory }}/config.xml"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs:
+  with_items:
+  - regexp: '<Port>'
+    line: '<Port>{{ sonarr.port.http }}</Port>'
+  - regexp: '<UrlBase>'
+    line: '<UrlBase>{{ sonarr.config.urlbase }}</UrlBase>'
+  - regexp: '<SslPort>'
+    line: '<SslPort>{{ sonarr.port.https }}</SslPort>'
+  - regexp: '<ApiKey>'
+    line: '<ApiKey>{{ sonarr.config.apikey }}</ApiKey>'
+
+- name: Restart Sonarr
   docker_container:
     name: "{{ sonarr.name }}"
     image: "{{ sonarr.image }}"
