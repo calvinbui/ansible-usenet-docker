@@ -4,6 +4,7 @@
 
   vars_files:
     - vars/services.yml
+    - vars/shared_services.yml
 
   roles:
     # - ubuntu-setup
