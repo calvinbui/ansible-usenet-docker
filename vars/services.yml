@@ -65,6 +65,8 @@ global:
     name: jdownloader
     port:
       http: 5800
+  nginx:
+    name: nginx
 
 services:
 # -

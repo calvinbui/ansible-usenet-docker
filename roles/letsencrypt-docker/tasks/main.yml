@@ -40,4 +40,4 @@
     dest: "{{ nginx.config.conf }}/vms.conf"
 
 - name: Restart NGINX container
-  command: "docker restart {{ nginx.name }}"
+  command: "docker restart {{ global.nginx.name }}"

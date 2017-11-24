@@ -6,7 +6,7 @@ nginx_base: /etc/nginx
 nginx_conf_d: "{{ nginx_base }}/conf.d"
 
 nginx:
-  name: nginx
+  name: "{{ global.nginx.name }}"
   # Docker image
   image: dweomer/nginx-auth-ldap
   port:

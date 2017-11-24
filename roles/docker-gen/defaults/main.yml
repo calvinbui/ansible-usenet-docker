@@ -1,0 +1,7 @@
+---
+
+dockergen:
+  name: docker-gen
+  image: jwilder/docker-gen
+  config:
+    directory: "{{ base_folder }}/docker-gen"

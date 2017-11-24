@@ -64,4 +64,3 @@ For problematic images that have been forked and edited (NZBGet and Transmission
 ## TODO
 
 -   401 Error Page, most likely have to use official NGINX LDAP Auth.
--   Move variables so that single roles can run without depending on other role variables

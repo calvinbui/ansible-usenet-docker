@@ -1,0 +1,33 @@
+---
+
+- name: Create Docker-gen folder
+  file:
+    path: "{{ dockergen.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create blank template
+  file:
+    path: "{{ dockergen.config.directory }}/blank.tmpl"
+    state: touch
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Pull Docker-gen image
+  docker_container:
+    name: "{{ dockergen.name }}"
+    image: "{{ dockergen.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    command: "-notify-sighup '{{ global.nginx.name }}' -watch /etc/docker-gen/templates/blank.tmpl"
+    networks:
+      - name: "{{ docker.network }}"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - "{{ dockergen.config.directory }}:/etc/docker-gen/templates"
