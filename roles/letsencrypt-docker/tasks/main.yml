@@ -1,9 +1,9 @@
 ---
 
-- include: ubuntu.yml
+- import_tasks: ubuntu.yml
   when: ansible_distribution == "Ubuntu"
 
-- include: centos.yml
+- import_tasks: centos.yml
   when: ansible_distribution == "CentOS"
 
 - name: Check if certificates already exist
