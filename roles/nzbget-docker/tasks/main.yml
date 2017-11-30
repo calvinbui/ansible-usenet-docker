@@ -1,18 +1,9 @@
 ---
 
-# - name: Create NZBGet config folder
-#   file:
-#     path: "{{ nzbget.config.directory }}"
-#     state: directory
-#     owner: "{{ user.name }}"
-#     group: "{{ user.group }}"
-#     mode: "0771"
-#   become: true
-
-# - name: Copy NZBGet configuration
-#   template:
-#     src: nzbget.conf.j2
-#     dest: "{{ nzbget.config.directory }}/nzbget.conf"
+- name: Delete NZBGet configuration (for fresh config)
+  file:
+    path: "{{ nzbget.config.directory }}/nzbget.conf"
+    state: absent
 
 - name: Pull and run NZBGet image
   docker_container:
@@ -48,6 +39,7 @@
     dest: "{{ nzbget.config.directory }}/nzbget.conf"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
+    state: present
   with_items:
   - regexp: "^MainDir="
     line: "MainDir={{ nzbget.config.MainDir }}"
