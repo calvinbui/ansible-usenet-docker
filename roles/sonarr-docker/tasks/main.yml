@@ -1,19 +1,10 @@
 ---
 
-# - name: Create Sonarr config folder
-#   file:
-#     path: "{{ sonarr.config.directory }}"
-#     state: directory
-#     owner: "{{ user.name }}"
-#     group: "{{ user.group }}"
-#     mode: "0771"
-#   become: true
+- name: Delete Sonarr configuration file (for fresh config)
+  file:
+    state: absent
+    path: "{{ sonarr.config.directory }}/config.xml"
 
-# - name: Copy configuration file
-#   template:
-#     src: config.xml.j2
-#     dest: "{{ sonarr.config.directory }}/config.xml"
-#
 - name: Pull Sonarr image
   docker_container:
     name: "{{ sonarr.name }}"

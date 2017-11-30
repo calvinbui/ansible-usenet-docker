@@ -1,18 +1,9 @@
 ---
 
-# - name: Create Transmission config folder
-#   file:
-#     path: "{{ transmission.config.directory }}"
-#     state: directory
-#     owner: "{{ user.name }}"
-#     group: "{{ user.group }}"
-#     mode: "0771"
-#   become: true
-#
-# - name: Copy Transmission configuration
-#   template:
-#     src: settings.json.j2
-#     dest: "{{ transmission.config.directory }}/settings.json"
+- name: Delete Transmission configuration (for fresh config)
+  file:
+    state: absent
+    path: "{{ transmission.config.directory }}/settings.json"
 
 - name: Pull Transmission image
   docker_container:

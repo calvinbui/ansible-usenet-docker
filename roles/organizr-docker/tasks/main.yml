@@ -1,18 +1,9 @@
 ---
 
-# - name: Create Organizr config folder
-#   file:
-#     path: "{{ organizr.config.directory }}"
-#     state: directory
-#     owner: "{{ user.name }}"
-#     group: "{{ user.group }}"
-#     mode: "0771"
-#   become: true
-#
-# - name: Copy configuration file
-#   template:
-#     src: config.php.j2
-#     dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
+- name: Delete Organizr configuration file (for fresh config)
+  file:
+    state: absent
+    dest: "{{ organizr.config.directory }}/www/Dashboard/config/config.php"
 
 - name: Pull Organizr image
   docker_container:
