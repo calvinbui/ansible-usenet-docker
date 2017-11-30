@@ -1,10 +1,5 @@
 ---
 
-- name: Make logs directory
-  file:
-    path: "{{ jdownloader.config.directory }}/logs"
-    state: directory
-
 - name: Pull JDownloader 2 image
   docker_container:
     name: "{{ jdownloader.name }}"
