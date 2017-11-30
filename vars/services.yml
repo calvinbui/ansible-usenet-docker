@@ -7,7 +7,7 @@ global:
       http: 6789
     config:
       server:
-        retention: 1000
+        retention: 3393
   transmission:
     name: transmission
     port:
