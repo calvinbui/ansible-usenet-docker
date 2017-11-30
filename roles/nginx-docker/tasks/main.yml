@@ -98,7 +98,7 @@
     image: "{{ nginx.image }}"
     state: started
     recreate: yes
-    restart_policy: unless-stopped
+    restart_policy: always
     dns_servers:
       - "{{ nginx.dns }}"
     dns_search_domains:
