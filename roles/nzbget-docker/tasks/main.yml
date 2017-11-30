@@ -149,3 +149,13 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+
+- name: Remove default folders
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ folders.downloads }}/nzb"
+  - "{{ folders.downloads }}/queue"
+  - "{{ folders.downloads }}/tmp"
+  - "{{ folders.downloads }}/nzbget.log"
