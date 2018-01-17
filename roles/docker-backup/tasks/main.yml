@@ -1,0 +1,27 @@
+---
+
+- name: Create docker backup folder
+  file:
+    path: "{{ dockerbackup.backup_output }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Pull docker-backup image
+  docker_container:
+    name: "{{ dockerbackup.name }}"
+    image: "{{ dockerbackup.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    volumes:
+      - "{{ dockerbackup.backup_input }}:/data/input"
+      - "{{ dockerbackup.backup_output }}:/data/backup"
+    env:
+      BACKUP_CRON_EXP: "{{ dockerbackup.backup_cron_exp }}"
+      BACKUP_TTL: "{{ dockerbackup.backup_ttL }}"
+      TZ: "{{ timezone }}"

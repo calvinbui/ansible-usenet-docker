@@ -1,0 +1,9 @@
+---
+
+dockerbackup:
+  name: docker-backup
+  image: osixia/backup
+  backup_input: "{{ base_folder }}"
+  backup_output: "{{ base_folder }}_backup"
+  backup_cron_exp: "12 11 * * *"
+  backup_ttL: "15"
