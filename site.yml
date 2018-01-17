@@ -13,6 +13,7 @@
     - nzbget-docker
     - transmission-docker
     - nzbhydra-docker
+    # - nzbhydra2-docker
     - sonarr-docker
     - couchpotato-docker
     - jdownloader-docker
@@ -23,6 +24,7 @@
     - docker-gen
     - backstroke
     - watchtower-docker
+    # - docker-backup
 
     # Testing
     # - radarr-docker

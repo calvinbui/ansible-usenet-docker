@@ -1,0 +1,30 @@
+---
+
+# - name: Delete NZB Hydra configuration (for fresh config)
+#   file:
+#     dest: "{{ nzbhydra2.config.directory }}/hydra/settings.cfg"
+#     state: absent
+#
+# - name: Copy NZB Hydra configuration
+#   template:
+#     src: settings.cfg.j2
+#     dest: "{{ nzbhydra2.config.directory }}/hydra/settings.cfg"
+
+- name: Pull NZBHydra 2 image
+  docker_container:
+    name: "{{ nzbhydra2.name }}"
+    image: "{{ nzbhydra2.image }}"
+    state: started
+    recreate: yes
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{nzbhydra2.port}}:{{nzbhydra2.port}}"
+    volumes:
+      - "{{ nzbhydra2.config.directory }}:/config"
+      - "{{ folders.downloads }}:/downloads"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
