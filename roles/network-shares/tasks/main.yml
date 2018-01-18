@@ -36,7 +36,7 @@
     group: "{{ nfs_mount.group }}"
     mode: "{{ nfs_mount.mode }}"
   become: true
-  when: nfs_mount_st.stat.isdir is not defined and nfs_mount_st.stat.isdir == False
+  when: nfs_mount_st.stat.exists == False
 
 # To autostart
 - name: Add NFS shares to fstab
