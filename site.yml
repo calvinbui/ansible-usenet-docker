@@ -24,7 +24,7 @@
     - docker-gen
     - backstroke
     - watchtower-docker
-    # - docker-backup
+    - docker-backup
 
     # Testing
     # - radarr-docker

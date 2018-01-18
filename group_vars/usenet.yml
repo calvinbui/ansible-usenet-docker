@@ -51,7 +51,7 @@ base_folder: "/{{ root_folder}}/{{ app_folder }}"
 # The mount folder name
 mount: hdd
 # Where the NFS file share will be
-mounts_folder: "{{ base_folder }}/{{ mount }}"
+mounts_folder: "/mnt/{{ mount }}"
 
 # NFS share settings, matches the mount command
 nfs_mount:

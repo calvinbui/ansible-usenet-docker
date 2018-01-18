@@ -5,5 +5,5 @@ dockerbackup:
   image: osixia/backup
   backup_input: "{{ base_folder }}"
   backup_output: "{{ base_folder }}_backup"
-  backup_cron_exp: "12 11 * * *"
-  backup_ttL: "15"
+  backup_cron_exp: "0 4 * * *"
+  backup_ttL: "2"
