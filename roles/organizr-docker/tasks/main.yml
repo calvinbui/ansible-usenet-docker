@@ -71,6 +71,8 @@
     line: '"couchAPI" => "{{ global.couchpotato.config.core.apikey }}",'
   - regexp: 'couchHomeAuth'
     line: '"couchHomeAuth" => "{{ organizr.config.couchHomeAuth }}",'
+  - regexp: 'transmissionURL'
+    line: '"transmissionURL" => "http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.http }}/{{ global.transmission.config.rpc_url }}",'
 
 - name: Restart Organizr image
   docker_container:
