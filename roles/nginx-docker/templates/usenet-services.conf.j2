@@ -25,7 +25,8 @@ server {
     {% endif %}
     proxy_pass {{ service.proxy_pass}};
     {% if service.name != "Organizr" %}
-    include  {{ nginx.ldap.prompt }};
+    auth_basic "PASSWORD REQUIRED";
+    auth_basic_user_file {{ nginx_base }}/htpasswd;
     {% endif %}
   }
   {% endfor %}

@@ -29,7 +29,7 @@
     mode: "0771"
   become: true
 
-- name: Create certificate  logs folder
+- name: Create certificate logs folder
   file:
     path: "{{ nginx.certs.directory }}/logs"
     state: directory
@@ -58,17 +58,34 @@
     mode: "0771"
   become: true
 
+# Generate HTTP Basic Auth
+
+- name: Install htpasswd
+  apt:
+    name: apache2-utils
+    state: latest
+    cache_valid_time: 3600
+  become: true
+
+- name: Install passlib (requirement)
+  pip:
+    name: passlib
+    state: latest
+  become: true
+
+- name: Generate htpasswd
+  htpasswd:
+    path: "{{ nginx.config.directory }}/htpasswd"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0444
+  become: true
+  with_items:
+    - "{{ httpauthusers }}"
+
 # All the files to copy --------------------------------------------------------
-
-- name: Copy LDAP configuration
-  template:
-    src: ldap-config.conf.j2
-    dest: "{{ nginx.config.conf }}/ldap-config.conf"
-
-- name: Copy LDAP Auth Prompt
-  template:
-    src: ldap-prompt.conf.j2
-    dest: "{{ nginx.config.conf }}/ldap-prompt.conf"
 
 - name: Copy Proxy configuration
   copy:
@@ -116,6 +133,7 @@
       - "{{ nginx.certs.directory }}:{{ nginx.certs.remote_directory }}:ro"
       - "{{ nginx.config.directory }}/{{ nginx.proxy.domain }}:{{ nginx_base }}/{{ nginx.proxy.domain }}"
       - "{{ nginx.config.directory }}/{{ nginx.vms.domain }}:{{ nginx_base }}/{{ nginx.vms.domain }}"
+      - "{{ nginx.config.directory }}/htpasswd:{{ nginx_base }}/htpasswd:ro"
     env:
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"

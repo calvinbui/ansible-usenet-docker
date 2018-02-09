@@ -4,27 +4,28 @@
 
   vars_files:
     - vars/services.yml
+    - vars/httpauthusers.yml
 
   roles:
-    - ubuntu-setup
-    - network-shares
-    - docker
-    - docker-network
-    - nzbget-docker
-    - transmission-docker
-    - nzbhydra-docker
+    # - ubuntu-setup
+    # - network-shares
+    # - docker
+    # - docker-network
+    # - nzbget-docker
+    # - transmission-docker
+    # - nzbhydra-docker
     # - nzbhydra2-docker
-    - sonarr-docker
-    - couchpotato-docker
-    - jdownloader-docker
-    - organizr-docker
-    - portainer-docker
+    # - sonarr-docker
+    # - couchpotato-docker
+    # - jdownloader-docker
+    # - organizr-docker
+    # - portainer-docker
     - nginx-docker
-    - letsencrypt-docker
-    - docker-gen
-    - backstroke
-    - watchtower-docker
-    - docker-backup
+    # - letsencrypt-docker
+    # - docker-gen
+    # - backstroke
+    # - watchtower-docker
+    # - docker-backup
 
     # Testing
     # - radarr-docker

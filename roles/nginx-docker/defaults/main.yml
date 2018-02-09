@@ -8,7 +8,7 @@ nginx_conf_d: "{{ nginx_base }}/conf.d"
 nginx:
   name: "{{ global.nginx.name }}"
   # Docker image
-  image: dweomer/nginx-auth-ldap
+  image: nginx
   port:
     http: 80
     https: 443
@@ -19,7 +19,6 @@ nginx:
     file: "{{ base_folder }}/nginx/nginx.conf"
     # what to include in nginx.conf
     includes:
-      - "{{ nginx_conf_d }}/ldap-config.conf"
       - "{{ nginx_conf_d }}/usenet-services.conf"
       - "{{ nginx_conf_d }}/vms.conf"
   # custom DNS servers to add
@@ -33,25 +32,6 @@ nginx:
       61616532633730626466323639653035363939626639393832303230396236646536316530346462
       3231613232373739630a303037306332346536386532356465376531336666333535386663393532
       3062
-  ldap:
-    file: "{{ nginx_conf_d }}/ldap-config.conf"
-    prompt: "{{ nginx_conf_d }}/ldap-prompt.conf"
-    server: adds
-    url: "ldaps://10.0.9.10:3269/dc=home,dc=net?sAMAccountName?sub?(objectClass=person)"
-    binddn:
-      # domain of user
-      domain: home
-      # user to connect to ldap
-      user: nginx
-      password: !vault |
-        $ANSIBLE_VAULT;1.1;AES256
-        36306535643636666461353730393436346231393164333233663264643665613166363838346462
-        3963376166313536626435373666393333663162386632380a356332313936313236316565316532
-        38376537326637383962376635323866373262333966323836646339616461353531313865663635
-        3433646434383032300a656335353765316466663764343934613762636464373163623266313063
-        6365
-    # group to authenticate against
-    group: "CN=Real,CN=Users,DC=home,DC=net"
   vms:
     domain: !vault |
       $ANSIBLE_VAULT;1.1;AES256
