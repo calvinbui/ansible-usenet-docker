@@ -8,10 +8,7 @@ organizr:
   config:
     directory: "{{ base_folder }}/organizr"
     auth:
-      type: both
-      backend: ldap
-      domain: home
-      host: "ldap://10.0.9.10:389"
+      type: internal
     database: /config/www/
     user_home: /config/www/users/
     # monday
