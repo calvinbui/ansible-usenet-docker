@@ -11,7 +11,9 @@ global:
   transmission:
     name: transmission
     port:
-      web: 9091
+      http: 9091
+    config:
+      rpc_url: transmission
   nzbhydra:
     name: nzbhydra
     port: 5075
@@ -109,7 +111,7 @@ services:
 -
   name: Transmission
   location: /transmission
-  proxy_pass: "http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.web }}"
+  proxy_pass: "http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.http }}"
 -
   name: CouchPotato
   location: /couchpotato

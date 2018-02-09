@@ -113,7 +113,7 @@
     value: '{{ global.nzbget.name }}.{{ docker.network }}:{{ global.nzbget.port.http }}'
   - section: 'transmission'
     option: 'host'
-    value: 'http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.web }}/'
+    value: 'http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.http }}/'
   - section: 'pushbullet'
     option: 'api_key'
     value: '{{ pushbullet.api }}'
