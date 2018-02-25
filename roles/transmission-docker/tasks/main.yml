@@ -77,6 +77,8 @@
     line: '"rpc-username": "{{ transmission.config.rpc_username }}",'
   - regexp: 'rpc-whitelist\":'
     line: '"rpc-whitelist": "{{ transmission.config.rpc_whitelist }}",'
+  - regexp: 'rpc-whitelist-enabled\":'
+    line: '"rpc-whitelist-enabled": "{{ transmission.config.rpc_whitelist_enabled }}",'
   - regexp: 'speed-limit-down\":'
     line: '"speed-limit-down": {{ transmission.config.speed_limit_down }},'
   - regexp: 'speed-limit-down-enabled'

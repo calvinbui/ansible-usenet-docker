@@ -22,6 +22,7 @@ transmission:
     rpc_url: "/{{ global.transmission.config.rpc_url }}/"
     rpc_username: transmission
     rpc_whitelist: "*.*.*.*"
+    rpc_whitelist_enabled: "true"
     speed_limit_down: 10000
     speed_limit_enabled: "true"
     idle_seeding_limit: 1
