@@ -1,6 +1,5 @@
 server {
   listen 80;
-  listen {{ nginx.vms.port.http }};
   server_name {{ nginx.vms.domain }};
 
   location /.well-known/acme-challenge {

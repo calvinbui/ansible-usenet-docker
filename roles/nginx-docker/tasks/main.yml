@@ -125,8 +125,6 @@
     published_ports:
       - "{{ nginx.port.http }}:80"
       - "{{ nginx.port.https }}:443"
-      - "{{ nginx.vms.port.http }}:{{ nginx.vms.port.http }}"
-      - "{{ nginx.vms.port.https }}:{{ nginx.vms.port.https }}"
     volumes:
       - "{{ nginx.config.conf }}:/etc/nginx/conf.d:ro"
       - "{{ nginx.config.file }}:/etc/nginx/nginx.conf:ro"

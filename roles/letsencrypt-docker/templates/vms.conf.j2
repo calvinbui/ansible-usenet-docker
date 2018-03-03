@@ -1,6 +1,5 @@
 server {
   listen 80;
-  listen {{ nginx.vms.port.http }};
   server_name {{ nginx.vms.domain }};
 
   location /.well-known/acme-challenge {
@@ -25,7 +24,6 @@ server {
 
 server {
   listen 443 ssl;
-  listen {{ nginx.vms.port.https }} ssl;
   server_name {{ nginx.vms.domain }};
 
   ssl_certificate_key {{ nginx.certs.remote_directory }}/config/live/{{ nginx.vms.domain }}/privkey.pem;
