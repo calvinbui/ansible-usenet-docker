@@ -12,3 +12,11 @@
       - name: "{{ docker.network }}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    env:
+      WATCHTOWER_NOTIFICATIONS: email
+      WATCHTOWER_NOTIFICATION_EMAIL_FROM: "{{ smtp.from }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_TO: "{{ smtp.to }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER: "{{ smtp.server }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT: "{{ smtp.tls_port }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER: "{{ smtp.server_username }}"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: "{{ smtp.server_password }}"
