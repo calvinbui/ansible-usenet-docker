@@ -6,7 +6,7 @@
     image: "{{ watchtower.image }}"
     state: started
     recreate: yes
-    restart_policy: unless-stopped
+    restart_policy: on-failure
     command: "--cleanup --debug"
     networks:
       - name: "{{ docker.network }}"
