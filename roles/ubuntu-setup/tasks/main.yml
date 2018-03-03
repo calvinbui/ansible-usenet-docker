@@ -13,3 +13,10 @@
     state: latest
     cache_valid_time: 3600
   become: true
+
+- name: Install bash completions
+  apt:
+    name: bash-completion
+    state: latest
+    cache_valid_time: 3600
+  become: true
