@@ -14,8 +14,6 @@
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ organizr.port.http }}:80"
     volumes:
       - "{{ organizr.config.directory }}:/config"
     env:
@@ -83,8 +81,6 @@
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ organizr.port.http }}:80"
     volumes:
       - "{{ organizr.config.directory }}:/config"
     env:
