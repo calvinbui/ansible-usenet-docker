@@ -163,19 +163,5 @@
 - name: Restart CouchPotato image
   docker_container:
     name: "{{ couchpotato.name }}"
-    image: "{{ couchpotato.image }}"
     state: started
-    recreate: yes
-    restart_policy: unless-stopped
-    networks:
-      - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ couchpotato.port.http }}:{{ couchpotato.port.http }}"
-    volumes:
-      - "{{ couchpotato.config.directory }}:/config"
-      - "{{ folders.movies }}:/movies"
-      - "{{ folders.downloads }}:/downloads"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
-      TZ: "{{ timezone }}"
+    restart: yes

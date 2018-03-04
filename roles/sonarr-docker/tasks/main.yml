@@ -56,20 +56,5 @@
 - name: Restart Sonarr
   docker_container:
     name: "{{ sonarr.name }}"
-    image: "{{ sonarr.image }}"
     state: started
-    recreate: yes
-    restart_policy: unless-stopped
-    networks:
-      - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ sonarr.port.http }}:{{ sonarr.port.http }}"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - "{{ sonarr.config.directory }}:/config"
-      - "{{ folders.tv }}:/tv"
-      - "{{ folders.downloads }}:/downloads"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
-      TZ: "{{ timezone }}"
+    restart: yes

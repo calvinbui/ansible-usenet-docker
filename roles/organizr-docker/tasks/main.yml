@@ -75,14 +75,5 @@
 - name: Restart Organizr image
   docker_container:
     name: "{{ organizr.name }}"
-    image: "{{ organizr.image }}"
     state: started
-    recreate: yes
-    restart_policy: unless-stopped
-    networks:
-      - name: "{{ docker.network }}"
-    volumes:
-      - "{{ organizr.config.directory }}:/config"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
+    restart: yes

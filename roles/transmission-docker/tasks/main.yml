@@ -87,21 +87,5 @@
 - name: Restart Transmission image
   docker_container:
     name: "{{ transmission.name }}"
-    image: "{{ transmission.image }}"
     state: started
-    recreate: yes
-    restart_policy: unless-stopped
-    networks:
-      - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ transmission.port.web }}:{{ transmission.port.web }}"
-      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}"
-      - "{{ transmission.port.listen }}:{{ transmission.port.listen }}/udp"
-    volumes:
-      - "{{ transmission.config.directory }}:/config"
-      - "{{ folders.downloads }}:/downloads"
-      - "{{ folders.watch }}:/watch"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
-      TZ: "{{ timezone }}"
+    restart: yes

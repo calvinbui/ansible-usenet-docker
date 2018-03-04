@@ -24,7 +24,7 @@
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
 
-- name: Wait until the NZBGet to start successfully
+- name: Wait for NZBGet to start successfully
   wait_for:
     timeout: 10
   delegate_to: localhost
@@ -134,21 +134,8 @@
 - name: Restart NZBGet image
   docker_container:
     name: "{{ nzbget.name }}"
-    image: "{{ nzbget.image }}"
     state: started
-    recreate: yes
-    restart_policy: unless-stopped
-    networks:
-      - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ nzbget.port.http }}:{{ nzbget.port.http }}"
-    volumes:
-      - "{{ nzbget.config.directory }}:/config"
-      - "{{ folders.downloads }}:/downloads"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
-      TZ: "{{ timezone }}"
+    restart: yes
 
 - name: Remove default folders
   file:
