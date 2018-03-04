@@ -21,7 +21,6 @@
     - organizr-docker
     - portainer-docker
     - nginx-docker
-    - letsencrypt-docker
     - docker-gen
     - backstroke
     - watchtower-docker

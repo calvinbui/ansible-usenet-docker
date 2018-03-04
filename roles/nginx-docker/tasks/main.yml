@@ -1,96 +1,47 @@
 ---
 
-- name: Create nginx conf.d folder
+- name: Create nginx folder
   file:
-    path: "{{ nginx.config.conf }}"
+    path: "{{ nginx.config.directory }}"
     state: directory
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
     mode: "0771"
   become: true
 
-# Certificate folders -----------------------------------------------------
+- name: Pull nginx image
+  docker_container:
+    name: "{{ nginx.name }}"
+    image: linuxserver/letsencrypt
+    state: started
+    recreate: yes
+    restart_policy: always
+    networks:
+      - name: "{{ docker.network }}"
+    capabilities:
+      - NET_ADMIN
+    published_ports:
+      - "{{ nginx.port.http }}:80"
+      - "{{ nginx.port.https }}:443"
+    volumes:
+      - "{{ nginx.config.directory }}:/config"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
+      URL: "{{ letsencrypt.url }}"
+      EXTRA_DOMAINS: "{{ letsencrypt.extra_domains }}"
+      EMAIL: "{{ letsencrypt.email }}"
+      VALIDATION: "{{ letsencrypt.validation }}"
+      #STAGING: true
 
-- name: Create certificate config folder
-  file:
-    path: "{{ nginx.certs.directory }}/config"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Create certificate work folder
-  file:
-    path: "{{ nginx.certs.directory }}/work"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Create certificate logs folder
-  file:
-    path: "{{ nginx.certs.directory }}/logs"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-# Create the webroots ----------------------------------------------------------
-
-- name: Create proxy domain folder
-  file:
-    path: "{{ nginx.config.directory }}/{{ nginx.proxy.domain }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-- name: Create vms domain folder
-  file:
-    path: "{{ nginx.config.directory }}/{{ nginx.vms.domain }}"
-    state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: "0771"
-  become: true
-
-# Generate HTTP Basic Auth
-
-- name: Install htpasswd
-  apt:
-    name: apache2-utils
-    state: latest
-    cache_valid_time: 3600
-  become: true
-
-- name: Install passlib (requirement)
-  pip:
-    name: passlib
-    state: latest
-  become: true
-
-- name: Generate htpasswd
-  htpasswd:
-    path: "{{ nginx.config.directory }}/htpasswd"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: 0444
-  become: true
-  with_items:
-    - "{{ httpauthusers }}"
-
-# All the files to copy --------------------------------------------------------
+# All the confs to copy --------------------------------------------------------
 
 - name: Copy Proxy configuration
   copy:
     src: proxy-settings.conf
-    dest: "{{ nginx.config.conf }}/proxy-settings.conf"
+    # Must be outside the site-conf folder
+    dest: "{{ nginx.config.nginx }}/proxy-settings.conf"
 
 - name: Copy usenet-services configuration
   template:
@@ -102,37 +53,21 @@
     src: vms.conf.j2
     dest: "{{ nginx.config.conf }}/vms.conf"
 
-- name: Copy nginx.conf
-  template:
-    src: nginx.conf.j2
-    dest: "{{ nginx.config.file }}"
+# Generate password 
+- name: Generate htpasswd
+  htpasswd:
+    path: "{{ nginx.config.nginx }}/htpasswd"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: 0444
+  become: true
+  with_items:
+    - "{{ httpauthusers }}"
 
-# ------------------------------------------------------------------------------
-
-- name: Pull nginx image
+- name: Restart nginx container
   docker_container:
     name: "{{ nginx.name }}"
-    image: "{{ nginx.image }}"
     state: started
-    recreate: yes
-    restart_policy: always
-    dns_servers:
-      - "{{ nginx.dns }}"
-    dns_search_domains:
-      - "{{ nginx.vms.domain }}"
-    networks:
-      - name: "{{ docker.network }}"
-    published_ports:
-      - "{{ nginx.port.http }}:80"
-      - "{{ nginx.port.https }}:443"
-    volumes:
-      - "{{ nginx.config.conf }}:/etc/nginx/conf.d:ro"
-      - "{{ nginx.config.file }}:/etc/nginx/nginx.conf:ro"
-      - "{{ nginx.certs.directory }}:{{ nginx.certs.remote_directory }}:ro"
-      - "{{ nginx.config.directory }}/{{ nginx.proxy.domain }}:{{ nginx_base }}/{{ nginx.proxy.domain }}"
-      - "{{ nginx.config.directory }}/{{ nginx.vms.domain }}:{{ nginx_base }}/{{ nginx.vms.domain }}"
-      - "{{ nginx.config.directory }}/htpasswd:{{ nginx_base }}/htpasswd:ro"
-    env:
-      PUID: "{{ user.uid }}"
-      PGID: "{{ user.gid }}"
-      TZ: "{{ timezone }}"
+    restart: yes

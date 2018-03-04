@@ -1,30 +1,21 @@
 ---
-
-# where NGINX is in the container
-nginx_base: /etc/nginx
-# Where the conf.d files are in the container
-nginx_conf_d: "{{ nginx_base }}/conf.d"
+nginx_container:
+  directory: "/config/nginx"
 
 nginx:
   name: "{{ global.nginx.name }}"
   # Docker image
-  image: nginx
+  image: linuxserver/letsencrypt
   port:
     http: 80
     https: 443
   config:
     # where nginx will be on the server (not container)
     directory: "{{ base_folder }}/nginx"
-    conf: "{{ base_folder }}/nginx/conf.d"
-    file: "{{ base_folder }}/nginx/nginx.conf"
-    # what to include in nginx.conf
-    includes:
-      - "{{ nginx_conf_d }}/usenet-services.conf"
-      - "{{ nginx_conf_d }}/vms.conf"
-  # custom DNS servers to add
-  dns: 10.0.9.1
+    nginx: "{{ base_folder }}/nginx/nginx"
+    conf: "{{ base_folder }}/nginx/nginx/site-confs"
   proxy:
-    file: "{{ nginx_conf_d }}/proxy-settings.conf"
+    file: "{{ nginx_container.directory }}/proxy-settings.conf"
     domain: !vault |
       $ANSIBLE_VAULT;1.1;AES256
       65663536376561303734323866383265316531333839613038313339356461643965353631656533
@@ -44,8 +35,16 @@ nginx:
     port:
       http: 8081
       https: 8082
-  site:
-     domain:
-  certs:
-    directory: "{{ base_folder }}/nginx/certs"
-    remote_directory: "{{ nginx_base }}/certs"
+
+letsencrypt:
+  email: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    30616162393063383236383538376134653664663362613866333531633466636263663137616661
+    3034323561373435323137363833626366336631656264350a626339613739646538313366636561
+    36653730386137636231363435306537303433636330306137313830316166393135376265313535
+    6135663266336631320a323363336139353762316437633061666536343566383839306630613263
+    63303737343334396166333861333261613966633032376330653839633666333434313338366361
+    3737356230303130376536313862666234323061666538343036
+  url: "{{ nginx.proxy.domain }}"
+  extra_domains: "{{ nginx.vms.domain }}"
+  validation: http
