@@ -14,14 +14,14 @@
     - nzbget-docker
     - transmission-docker
     - nzbhydra-docker
-    - nzbhydra2-docker
+    # - nzbhydra2-docker
     - sonarr-docker
     - couchpotato-docker
     - jdownloader-docker
     - organizr-docker
     - portainer-docker
     - nginx-docker
-    - docker-gen
+    # - docker-gen
     - backstroke
     - watchtower-docker
     - docker-backup
