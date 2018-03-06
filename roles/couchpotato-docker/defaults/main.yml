@@ -39,8 +39,16 @@ couchpotato:
       enabled: 1
     transmission:
       enabled: 1
-    pushbullet:
+    email:
+      starttls: 1
+      smtp_pass: "{{ smtp.server_password }}"
+      from: "{{ smtp.from }}"
+      to: "{{ smtp.to }}"
+      smtp_port: "{{ smtp.tls_port }}"
       enabled: 1
+      smtp_server: "{{ smtp.server }}"
+      smtp_user: "{{ smtp.server_username }}"
+      ssl: 0
     newznab:
       use: 1
       extra_score: ""
