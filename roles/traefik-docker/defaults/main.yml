@@ -1,0 +1,13 @@
+---
+
+traefik:
+  name: traefik
+  # Docker image
+  image: traefik:alpine
+  port:
+    http: 80
+    https: 443
+    management: 8080
+  config:
+    # where traefik will be on the server (not container)
+    directory: "{{ base_folder }}/traefik"

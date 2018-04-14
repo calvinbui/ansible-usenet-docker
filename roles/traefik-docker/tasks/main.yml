@@ -1,0 +1,22 @@
+---
+
+- name: Pull traefik image
+  docker_container:
+    name: "{{ traefik.name }}"
+    image: "{{ traefik.image }}"
+    state: started
+    recreate: yes
+    restart_policy: always
+    command: "--docker"
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ traefik.port.http }}:80"
+      - "{{ traefik.port.https }}:443"
+      - "{{ traefik.port.management }}:{{ traefik.port.management }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/calvin/traefik.toml:/traefik.toml
+      - /home/calvin/acme.json:/acme.toml
+    labels:
+      traefik.port: "8080"

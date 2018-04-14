@@ -1,0 +1,27 @@
+defaultEntryPoints = ["http", "https"]
+
+[web]
+address = ":8080"
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+#    [entryPoints.http.redirect]
+#      entryPoint = "https"
+  [entryPoyints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+
+# Enable ACME (Let's Encrypt): automatic SSL.
+[acme]
+email = ""
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+onDemand = false
+[[acme.domains]]
+    main = ""
+[[acme.domains]]
+    main = ""
+[acme.httpChallenge]
+  entryPoint = "http"
