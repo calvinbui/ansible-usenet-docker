@@ -1,0 +1,3 @@
+{{ range $key, $value := whereNot $ "Name" "nginx" }}
+{{ $value.Name }} ({{$value.ID}}
+{{ end }}

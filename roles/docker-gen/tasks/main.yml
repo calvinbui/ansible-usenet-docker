@@ -1,6 +1,16 @@
 ---
 
-- name: Create Docker-gen folder
+- name: Stop docker-gen container
+  docker_container:
+    name: "{{ dockergen.name }}"
+    state: stopped
+
+- name: Wait for other containers
+  wait_for:
+    timeout: 10
+  delegate_to: localhost
+
+- name: Create docker-gen folder
   file:
     path: "{{ dockergen.config.directory }}"
     state: directory
@@ -10,24 +20,23 @@
   become: true
 
 - name: Create blank template
-  file:
-    path: "{{ dockergen.config.directory }}/blank.tmpl"
-    state: touch
+  copy:
+    src: docker.tmpl
+  # Must be outside the site-conf folder
+    dest: "{{ dockergen.config.directory }}/docker.tmpl"
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
     mode: "0771"
   become: true
 
-- name: Pull Docker-gen image
+- name: Pull docker-gen image
   docker_container:
     name: "{{ dockergen.name }}"
     image: "{{ dockergen.image }}"
     state: started
     recreate: yes
-    restart_policy: unless-stopped
-    command: "-notify-sighup '{{ global.nginx.name }}' -watch /etc/docker-gen/templates/blank.tmpl"
-    networks:
-      - name: "{{ docker.network }}"
+    restart_policy: always
+    command: "-notify-sighup '{{ global.nginx.name }}' -watch /etc/docker-gen/templates/docker.tmpl /etc/docker-gen/templates/docker"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "{{ dockergen.config.directory }}:/etc/docker-gen/templates"
