@@ -26,6 +26,7 @@
     - watchtower-docker
     - docker-backup
     - datadog-docker
+    - logzio-docker
 
     # Testing
     # - radarr-docker

@@ -1,0 +1,14 @@
+---
+
+- name: Pull logz.io image
+  docker_container:
+    name: "{{ logzio.name }}"
+    image: "{{ logzio.image }}"
+    state: started
+    recreate: yes
+    restart_policy: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    env:
+      LOGZIO_TOKEN: "{{ logzio.config.tty }}"
+      LOGZIO_ZONE: "{{ logzio.config.zone }}"
