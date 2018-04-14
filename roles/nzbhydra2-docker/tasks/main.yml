@@ -1,14 +1,9 @@
 ---
 
-# - name: Delete NZB Hydra configuration (for fresh config)
-#   file:
-#     dest: "{{ nzbhydra2.config.directory }}/hydra/settings.cfg"
-#     state: absent
-#
-# - name: Copy NZB Hydra configuration
-#   template:
-#     src: settings.cfg.j2
-#     dest: "{{ nzbhydra2.config.directory }}/hydra/settings.cfg"
+- name: Delete NZBHydra 2 configuration (for fresh config)
+  file:
+    path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
+    state: absent
 
 - name: Pull NZBHydra 2 image
   docker_container:
@@ -28,3 +23,79 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+
+- name: Wait for NZBHydra 2 to start successfully
+  wait_for:
+    timeout: 10
+  delegate_to: localhost
+
+- name: Stop NZBHydra 2 to change configuration
+  docker_container:
+    name: "{{ nzbhydra2.name }}"
+    state: stopped
+
+- name: Update NZBHydra 2 main configuration
+  lineinfile:
+    path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    insertafter: "main:"
+  with_items:
+  - regexp: 'apiKey:'
+    line: '  apiKey: "{{ nzbhydra2.config.main.apikey }}"'
+  - regexp: 'dereferer:'
+    line: '  dereferer: "{{ nzbhydra2.config.main.dereferer }}"'
+  - regexp: 'logIpAddresses:'
+    line: '    logIpAddresses: {{ nzbhydra2.config.main.logging.logIpAddresses }}'
+  - regexp: 'startupBrowser:'
+    line: '  startupBrowser: {{ nzbhydra2.config.main.startupBrowser }}'
+  - regexp: 'urlBase:'
+    line: '  urlBase: "{{ nzbhydra2.config.main.urlBase }}"'
+  - regexp: 'verifySsl:'
+    line: '  verifySsl: {{ nzbhydra2.config.main.verifySsl }}'
+  - regexp: 'welcomeShown:'
+    line: '  welcomeShown: {{ nzbhydra2.config.main.welcomeShown }}'
+
+- name: Add nzbget to NZBHydra as a downloader
+  blockinfile:
+    path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
+    insertafter: "downloading:"
+    marker: "# {mark} Downloaders - ANSIBLE MANAGED"
+    block: |+2
+        downloaders:
+        - apiKey: null
+          defaultCategory: "{{ nzbhydra2.config.downloaders.category }}"
+          downloadType: "{{ nzbhydra2.config.downloaders.downloadType }}"
+          enabled: true
+          iconCssClass: ""
+          name: "{{ nzbhydra2.config.downloaders.name }}"
+          nzbAddingType: "{{ nzbhydra2.config.downloaders.nzbAddingType }}"
+          downloaderType: "{{ nzbhydra2.config.downloaders.type }}"
+          url: "{{ nzbhydra2.config.downloaders.url }}"
+          username: {{ nzbhydra2.config.downloaders.username }}
+          password: {{ nzbhydra2.config.downloaders.password }}
+
+- name: Add indexers to NZBHydra 2
+  blockinfile:
+    path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
+    insertafter: "sendMagnetLinks"
+    marker: "# {mark} Indexers - ANSIBLE MANAGED"
+    block: |
+      {{ nzbhydra2.config.indexers }}
+
+- name: Remove blank indexer and downloaders caused by blockinfile
+  lineinfile:
+    path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
+    regexp: "{{ item.regexp }}"
+    state: absent
+  with_items:
+  - regexp: 'downloaders: \[\]'
+  - regexp: 'indexers: \[\]'
+
+
+- name: Restart NZBHydra 2 image
+  docker_container:
+    name: "{{ nzbhydra2.name }}"
+    state: started
+    restart: yes

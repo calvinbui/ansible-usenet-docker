@@ -13,15 +13,13 @@
     - docker-network
     - nzbget-docker
     - transmission-docker
-    - nzbhydra-docker
-    # - nzbhydra2-docker
+    - nzbhydra2-docker
     - sonarr-docker
     - couchpotato-docker
     - jdownloader-docker
     - organizr-docker
     - portainer-docker
     - nginx-docker
-    # - docker-gen
     - backstroke
     - watchtower-docker
     - docker-backup
@@ -30,11 +28,14 @@
 
     # Testing
     # - radarr-docker
+    # - traefik-docker
 
     # Old
     # - freenas-permissions
     # - centos-setup
     # - muximux-docker
+    # - docker-gen
+    # - nzbhydra-docker
 
   post_tasks:
     - name: Check if reboot is required
