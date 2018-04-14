@@ -25,6 +25,7 @@
     - backstroke
     - watchtower-docker
     - docker-backup
+    - datadog-docker
 
     # Testing
     # - radarr-docker

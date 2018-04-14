@@ -1,0 +1,15 @@
+---
+
+- name: Pull datadog image
+  docker_container:
+    name: "{{ datadog.name }}"
+    image: "{{ datadog.image }}"
+    state: started
+    recreate: yes
+    restart_policy: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    env:
+      DD_API_KEY: "{{ datadog.config.api }}"
