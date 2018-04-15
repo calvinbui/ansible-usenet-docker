@@ -15,7 +15,7 @@
     networks:
       - name: "{{ docker.network }}"
     published_ports:
-      - "{{nzbhydra2.port}}:{{nzbhydra2.port}}"
+      - "{{ nzbhydra2.port }}:{{ nzbhydra2.port }}"
     volumes:
       - "{{ nzbhydra2.config.directory }}:/config"
       - "{{ folders.downloads }}:/downloads"
@@ -23,10 +23,13 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ nzbhydra2.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"
 
 - name: Wait for NZBHydra 2 to start successfully
   wait_for:
-    timeout: 10
+    timeout: 15
   delegate_to: localhost
 
 - name: Stop NZBHydra 2 to change configuration
@@ -92,7 +95,6 @@
   with_items:
   - regexp: 'downloaders: \[\]'
   - regexp: 'indexers: \[\]'
-
 
 - name: Restart NZBHydra 2 image
   docker_container:

@@ -1,5 +1,25 @@
 ---
 
+- name: Create traefik folder
+  file:
+    path: "{{ traefik.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Create blank acme.json
+  file:
+      path: "{{ traefik.config.directory }}/acme.json"
+      state: touch
+      mode: "0600"
+
+- name: Copy traefik config
+  template:
+    src: traefik.toml.j2
+    dest: "{{ traefik.config.directory }}/traefik.toml"
+
 - name: Pull traefik image
   docker_container:
     name: "{{ traefik.name }}"
@@ -16,7 +36,8 @@
       - "{{ traefik.port.management }}:{{ traefik.port.management }}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/calvin/traefik.toml:/traefik.toml
-      - /home/calvin/acme.json:/acme.toml
-    labels:
-      traefik.port: "8080"
+      - "{{ traefik.config.directory }}/traefik.toml:/traefik.toml"
+      - "{{ traefik.config.directory }}/acme.json:/acme.json"
+    env:
+      CLOUDFLARE_EMAIL: "{{ traefik.config.proxy.email }}"
+      CLOUDFLARE_API_KEY: "{{ traefik.config.proxy.api }}"

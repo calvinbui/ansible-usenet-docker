@@ -1,0 +1,23 @@
+defaultEntryPoints = ["http", "https"]
+
+[web]
+address = ":8080"
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+
+[acme]
+email = "{{ traefik.config.proxy.email }}"
+storage = "acme.json"
+entryPoint = "https"
+[[acme.domains]]
+    main = "*.{{ traefik.config.proxy.domain }}"
+    sans = ["{{ traefik.config.proxy.domain }}"]
+[acme.dnsChallenge]
+  provider = "{{ traefik.config.proxy.provider }}"

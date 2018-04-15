@@ -24,6 +24,9 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ couchpotato.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"
 
 - name: Wait until the CouchPotato to start successfully
   wait_for:

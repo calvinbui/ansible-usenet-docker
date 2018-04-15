@@ -19,7 +19,7 @@
     - jdownloader-docker
     - organizr-docker
     - portainer-docker
-    - nginx-docker
+    - traefik-docker
     - backstroke
     - watchtower-docker
     - docker-backup
@@ -28,7 +28,6 @@
 
     # Testing
     # - radarr-docker
-    # - traefik-docker
 
     # Old
     # - freenas-permissions
@@ -36,6 +35,7 @@
     # - muximux-docker
     # - docker-gen
     # - nzbhydra-docker
+    # - nginx-docker
 
   post_tasks:
     - name: Check if reboot is required

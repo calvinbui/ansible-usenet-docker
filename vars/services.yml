@@ -1,6 +1,13 @@
 ---
 
 global:
+  domain: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    65663536376561303734323866383265316531333839613038313339356461643965353631656533
+    3666383065653231643264353730373531326537383438310a333036366164353766316330643330
+    61616532633730626466323639653035363939626639393832303230396236646536316530346462
+    3231613232373739630a303037306332346536386532356465376531336666333535386663393532
+    3062
   nzbget:
     name: nzbget
     port:
@@ -13,21 +20,7 @@ global:
     port:
       http: 9091
     config:
-      rpc_url: transmission
-  nzbhydra:
-    name: nzbhydra
-    port: 5075
-    config:
-      main:
-        apikey: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          35666239356135366630393333376333633936363636646263353436363137366130303838333537
-          6334653132373463366232366334653863656564343235360a623935373930313838636566366264
-          62313863326631656334633761356330666534366263313631666261643066323830623434373261
-          3465373830323031650a313935323833336365346132383661633930313230356639623134393833
-          39643737343434376230363062623738633862303862343963353231373834666430376133356462
-          6435656338323731616235633532326137323962623637346339
-        urlBase: /nzbhydra
+      rpc_url: "/transmission/"
   nzbhydra2:
     name: nzbhydra2
     port: 5076
@@ -40,13 +33,13 @@ global:
           64366536353862356665336239333536383132323239323466356466396566306630633237313335
           3931373735633731330a643031343165383936376564316332383537336334376164303235613036
           63356637303564666365303236393365656432313364643032346161633466643432
-        urlBase: /nzbhydra2
+        urlBase: null #/nzbhydra2
   sonarr:
     name: sonarr
     port:
       http: 8989
     config:
-      urlbase: /sonarr
+      urlbase: "" #/sonarr
       apikey: !vault |
         $ANSIBLE_VAULT;1.1;AES256
         63366462353864323163646139346335363032396164393265333333666634316362346137313834
@@ -69,7 +62,7 @@ global:
           6663653966306335350a333737353333613933343130663333333461363062373165313031613835
           64653066303263303237356466376462613139396565346634663863306532303238623063663562
           3363636133363835336133666234333238346362333336646537
-        urlbase: /couchpotato
+        urlbase: "" #/couchpotato
   organizr:
     name: organizr
   portainer:
@@ -82,82 +75,17 @@ global:
       http: 5800
   nginx:
     name: nginx
-
-services:
-# -
-#   name: Muximux
-#   location: /
-#   # Muximux is running on port 80 on the host but exposed through 8080 on the host
-#   proxy_pass: "http://{{ muximux.name }}.{{ docker.network }}"
--
-  name: Organizr
-  location: /
-  proxy_pass: "http://{{ global.organizr.name }}.{{ docker.network }}"
--
-  name: NZBGet
-  location: /nzbget/
-  proxy_pass: "http://{{ global.nzbget.name }}.{{ docker.network }}:{{ global.nzbget.port.http}}"
--
-  name: Sonarr
-  location: /sonarr
-  proxy_pass: "http://{{ global.sonarr.name }}.{{ docker.network }}:{{ global.sonarr.port.http }}{{ global.sonarr.config.urlbase }}"
-  include:
-    - "include {{ nginx.proxy.file }}"
-# -
-#   name: "NZB Hydra"
-#   location: /nzbhydra
-#   proxy_pass: "http://{{ global.nzbhydra.name }}.{{ docker.network}}:{{ global.nzbhydra.port }}{{ global.nzbhydra.config.main.urlBase }}"
--
-  name: "NZBHydra2"
-  location: /nzbhydra2
-  proxy_pass: "http://{{ global.nzbhydra2.name }}.{{ docker.network}}:{{ global.nzbhydra2.port }}{{ global.nzbhydra2.config.main.urlBase }}"
--
-  name: Transmission
-  location: /transmission
-  proxy_pass: "http://{{ global.transmission.name }}.{{ docker.network }}:{{ global.transmission.port.http }}"
--
-  name: CouchPotato
-  location: /couchpotato
-  proxy_pass: "http://{{ global.couchpotato.name }}.{{ docker.network }}:{{ global.couchpotato.port.http }}{{ global.couchpotato.config.core.urlbase }}"
--
-  name: JDownloader
-  location: /jdownloader/
-  proxy_pass: "http://{{ global.jdownloader.name }}.{{ docker.network }}:{{ global.jdownloader.port.http }}/"
-  include:
-    - 'proxy_set_header Upgrade $http_upgrade'
-    - 'proxy_set_header Connection "upgrade"'
-    - 'proxy_http_version 1.1'
--
-  name: JDownloader Websocket
-  location: /websockify
-  proxy_pass: "http://{{ global.jdownloader.name }}.{{ docker.network }}:{{ global.jdownloader.port.http }}/websockify"
-  include:
-    - 'proxy_set_header Upgrade $http_upgrade'
-    - 'proxy_set_header Connection "upgrade"'
-    - 'proxy_http_version 1.1'
-    - 'proxy_read_timeout 61s'
-    - 'proxy_buffering off'
--
-  name: Portainer
-  location: /portainer/
-  # Portainer has an upstream configurationin NGINX so 'portainer' alone here will work
-  proxy_pass: "http://portainer/"
-  include:
-    - 'proxy_http_version 1.1'
-    - 'proxy_set_header Connection ""'
--
-  name: Portainer Web Socket
-  location: /portainer/api/websocket/
-  proxy_pass: "http://portainer/api/websocket/"
-  include:
-    - 'proxy_set_header Upgrade $http_upgrade'
-    - 'proxy_set_header Connection "upgrade"'
-    - 'proxy_http_version 1.1'
-# -
-#   name: Radarr
-#   location: /radarr
-#   icon:  "muximux-movie_creation"
-#   color: "#ff9900"
-#   proxy_pass: "http://{{ radarr.name }}.{{ docker.network }}:{{ radarr.port.http }}{{ radarr.config.urlbase }}"
-#   include:
-#     - "{{ nginx.proxy.file }}"
+  # nzbhydra:
+  #   name: nzbhydra
+  #   port: 5075
+  #   config:
+  #     main:
+  #       apikey: !vault |
+  #         $ANSIBLE_VAULT;1.1;AES256
+  #         35666239356135366630393333376333633936363636646263353436363137366130303838333537
+  #         6334653132373463366232366334653863656564343235360a623935373930313838636566366264
+  #         62313863326631656334633761356330666534366263313631666261643066323830623434373261
+  #         3465373830323031650a313935323833336365346132383661633930313230356639623134393833
+  #         39643737343434376230363062623738633862303862343963353231373834666430376133356462
+  #         6435656338323731616235633532326137323962623637346339
+  #       urlBase: /nzbhydra
