@@ -1,5 +1,19 @@
 ---
 
+- name: Create traefik folder
+  file:
+    path: "{{ traefik.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy traefik config
+  copy:
+    src: traefik.toml
+    dest: "{{ traefik.config.directory }}/traefik.toml"
+
 - name: Pull traefik image
   docker_container:
     name: "{{ traefik.name }}"
@@ -16,7 +30,7 @@
       - "{{ traefik.port.management }}:{{ traefik.port.management }}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/calvin/traefik.toml:/traefik.toml
-      - /home/calvin/acme.json:/acme.toml
+      - "{{ traefik.config.directory }}/traefik.toml:/traefik.toml"
+      #- /home/calvin/acme.json:/acme.toml
     labels:
       traefik.port: "8080"

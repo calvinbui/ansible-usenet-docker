@@ -19,7 +19,7 @@ transmission:
       30376337616466613462313434346432363132313936326133653838376465336666383666646532
       32653436306364346365646234666662636666633938316236616566353838613734643335393863
       343030666230343636323763656263316534
-    rpc_url: "/{{ global.transmission.config.rpc_url }}/"
+    rpc_url: "{{ global.transmission.config.rpc_url }}"
     rpc_username: transmission
     rpc_whitelist: "*.*.*.*"
     rpc_whitelist_enabled: "true"

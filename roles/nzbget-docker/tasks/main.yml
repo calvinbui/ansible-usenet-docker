@@ -23,6 +23,8 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ nzbget.name }}.{{ global.domain }}"
 
 - name: Wait for NZBGet to start successfully
   wait_for:

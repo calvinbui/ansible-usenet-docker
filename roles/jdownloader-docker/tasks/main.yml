@@ -16,3 +16,5 @@
       - /etc/localtime:/etc/localtime:ro
       - "{{ jdownloader.config.directory }}:/config:rw"
       - "{{ folders.downloads }}:/output:rw"
+    labels:
+      traefik.frontend.rule: "Host:{{ jdownloader.name }}.{{ global.domain }}"

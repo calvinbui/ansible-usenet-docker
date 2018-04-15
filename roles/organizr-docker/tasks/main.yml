@@ -19,6 +19,8 @@
     env:
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ global.domain }}"
 
 - name: Wait for Organizr to start
   wait_for:

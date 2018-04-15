@@ -25,6 +25,8 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ sonarr.name }}.{{ global.domain }}"
 
 - name: Wait until the Sonarr to start successfully
   wait_for:

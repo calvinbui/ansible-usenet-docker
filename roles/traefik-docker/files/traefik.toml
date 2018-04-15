@@ -13,15 +13,15 @@ address = ":8080"
     [entryPoints.https.tls]
 
 # Enable ACME (Let's Encrypt): automatic SSL.
-[acme]
-email = ""
-storage = "acme.json"
-entryPoint = "https"
-onHostRule = true
-onDemand = false
-[[acme.domains]]
-    main = ""
-[[acme.domains]]
-    main = ""
-[acme.httpChallenge]
-  entryPoint = "http"
+# [acme]
+# email = ""
+# storage = "acme.json"
+# entryPoint = "https"
+# onHostRule = true
+# onDemand = false
+# [[acme.domains]]
+#     main = ""
+# [[acme.domains]]
+#     main = ""
+# [acme.httpChallenge]
+#   entryPoint = "http"

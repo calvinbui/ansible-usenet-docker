@@ -2,7 +2,7 @@
 
 nzbhydra2:
   name: "{{ global.nzbhydra2.name }}"
-  image: linuxserver/hydra2
+  image: calvinbui/docker-hydra2
   port: "{{ global.nzbhydra2.port }}"
   config:
     directory: "{{ base_folder }}/nzbhydra2"

@@ -24,6 +24,8 @@
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
+    labels:
+      traefik.frontend.rule: "Host:{{ couchpotato.name }}.{{ global.domain }}"
 
 - name: Wait until the CouchPotato to start successfully
   wait_for:
