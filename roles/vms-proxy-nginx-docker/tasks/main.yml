@@ -1,0 +1,34 @@
+---
+
+- name: Create nginx folder
+  file:
+    path: "{{ nginx.config.directory }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    mode: "0771"
+  become: true
+
+- name: Copy vms configuration
+  template:
+    src: vms.conf.j2
+    dest: "{{ nginx.config.directory }}/vms.conf"
+
+- name: Pull nginx image
+  docker_container:
+    name: "{{ nginx.name }}"
+    image: "{{ nginx.image }}"
+    state: started
+    recreate: yes
+    restart_policy: always
+    networks:
+      - name: "{{ docker.network }}"
+    published_ports:
+      - "{{ nginx.port.http }}:{{ nginx.port.http }}"
+      - "{{ nginx.port.https }}:{{ nginx.port.https }}"
+    volumes:
+      - "{{ nginx.config.directory }}:/etc/nginx/conf.d"
+    env:
+      PUID: "{{ user.uid }}"
+      PGID: "{{ user.gid }}"
+      TZ: "{{ timezone }}"
