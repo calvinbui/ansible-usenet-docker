@@ -29,6 +29,7 @@
     volumes:
       - "{{ nginx.config.directory }}:/etc/nginx/conf.d"
     env:
+      traefik.frontend.rule: "Host:"
       PUID: "{{ user.uid }}"
       PGID: "{{ user.gid }}"
       TZ: "{{ timezone }}"
