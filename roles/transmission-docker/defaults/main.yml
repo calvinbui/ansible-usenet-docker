@@ -21,6 +21,8 @@ transmission:
       343030666230343636323763656263316534
     rpc_url: "{{ global.transmission.config.rpc_url }}"
     rpc_username: transmission
+    #rpc-host-whitelist: ""
+    rpc_host_whitelist_enabled: "false"
     rpc_whitelist: "*.*.*.*"
     rpc_whitelist_enabled: "true"
     speed_limit_down: 10000

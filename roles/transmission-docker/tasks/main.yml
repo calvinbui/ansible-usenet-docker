@@ -32,7 +32,7 @@
 
 - name: Wait until the Transmission settings file is present before continuing
   wait_for:
-    timeout: 10
+    timeout: 20
   delegate_to: localhost
 
 - name: Stop Transmission to change configuration
@@ -41,7 +41,7 @@
     state: stopped
 
 # Some require colons to differentitate from '-enabled' for regex
-- name: Copy Transmission configuration
+- name: Change Transmission configuration
   lineinfile:
     dest: "{{ transmission.config.directory }}/settings.json"
     regexp: "{{ item.regexp }}"
@@ -70,6 +70,8 @@
     line: '"ratio-limit": {{ transmission.config.ratio_limit }},'
   - regexp: 'ratio-limit-enabled'
     line: '"ratio-limit-enabled": {{ transmission.config.ratio_limit_enabled }},'
+  - regexp: 'rpc-host-whitelist-enabled'
+    line: '"rpc-host-whitelist-enabled": "{{ transmission.config.rpc_host_whitelist_enabled }}",'
   - regexp: 'rpc-password'
     line: '"rpc-password": "{{ transmission.config.rpc_password }}",'
   - regexp: 'rpc-port'
