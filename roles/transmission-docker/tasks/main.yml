@@ -28,6 +28,7 @@
       TZ: "{{ timezone }}"
     labels:
       traefik.frontend.rule: "Host:{{ transmission.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"
 
 - name: Wait until the Transmission settings file is present before continuing
   wait_for:

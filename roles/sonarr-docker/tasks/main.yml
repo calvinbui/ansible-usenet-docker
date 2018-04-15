@@ -27,6 +27,7 @@
       TZ: "{{ timezone }}"
     labels:
       traefik.frontend.rule: "Host:{{ sonarr.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"
 
 - name: Wait until the Sonarr to start successfully
   wait_for:

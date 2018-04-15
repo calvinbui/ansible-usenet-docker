@@ -18,3 +18,4 @@
       - "{{ folders.downloads }}:/output:rw"
     labels:
       traefik.frontend.rule: "Host:{{ jdownloader.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"

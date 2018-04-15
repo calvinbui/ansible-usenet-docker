@@ -17,3 +17,4 @@
       - "{{ portainer.config.directory }}:/data"
     labels:
       traefik.frontend.rule: "Host:{{ portainer.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"

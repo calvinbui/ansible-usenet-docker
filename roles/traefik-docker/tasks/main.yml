@@ -20,18 +20,6 @@
     src: traefik.toml.j2
     dest: "{{ traefik.config.directory }}/traefik.toml"
 
-- name: Generate htpasswd
-  htpasswd:
-    path: "{{ traefik.config.directory }}/htpasswd"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
-    owner: "{{ user.name }}"
-    group: "{{ user.group }}"
-    mode: 0444
-  become: true
-  with_items:
-    - "{{ httpauthusers }}"
-
 - name: Pull traefik image
   docker_container:
     name: "{{ traefik.name }}"
@@ -50,9 +38,6 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ traefik.config.directory }}/traefik.toml:/traefik.toml"
       - "{{ traefik.config.directory }}/acme.json:/acme.json"
-      - "{{ traefik.config.directory }}/htpasswd:/htpasswd"
-    labels:
-      traefik.port: "8080"
     env:
       CLOUDFLARE_EMAIL: "{{ traefik.config.proxy.email }}"
       CLOUDFLARE_API_KEY: "{{ traefik.config.proxy.api }}"

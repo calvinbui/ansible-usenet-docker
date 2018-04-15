@@ -25,6 +25,7 @@
       TZ: "{{ timezone }}"
     labels:
       traefik.frontend.rule: "Host:{{ nzbget.name }}.{{ global.domain }}"
+      traefik.frontend.auth.basic: "{{ httpauthusers.calvin.name }}:{{ httpauthusers.calvin.password }},{{ httpauthusers.tammy.name }}:{{ httpauthusers.tammy.password }}"
 
 - name: Wait for NZBGet to start successfully
   wait_for:

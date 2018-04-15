@@ -10,8 +10,6 @@ address = ":8080"
     entryPoint = "https"
   [entryPoints.https]
     address = ":443"
-    [entryPoints.http.auth.basic]
-      usersFile = "/htpasswd"
     [entryPoints.https.tls]
 
 [acme]
