@@ -3,7 +3,7 @@
 traefik:
   name: traefik
   # Docker image
-  image: traefik:1.6.0-rc5-alpine
+  image: traefik:1.6.3
   port:
     http: 80
     https: 443
