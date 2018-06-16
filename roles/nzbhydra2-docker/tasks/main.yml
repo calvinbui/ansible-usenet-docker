@@ -60,7 +60,7 @@
   - regexp: 'welcomeShown:'
     line: '  welcomeShown: {{ nzbhydra2.config.main.welcomeShown }}'
 
-- name: Add nzbget to NZBHydra as a downloader
+- name: Add nzbget to NZBHydra 2 as a downloader
   blockinfile:
     path: "{{ nzbhydra2.config.directory }}/nzbhydra.yml"
     insertafter: "downloading:"
