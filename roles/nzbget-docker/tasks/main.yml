@@ -102,6 +102,12 @@
     line: "UnpackPauseQueue={{ nzbget.config.unpack.unpackpausequeue }}"
   - regexp: "^ScriptPauseQueue="
     line: "ScriptPauseQueue={{ nzbget.config.script.scriptpausequeue }}"
+  - regexp: "^DirectUnpack="
+    line: "DirectUnpack={{ nzbget.config.unpack.directunpack }}"
+  - regexp: "^DirectRename="
+    line: "DirectRename={{ nzbget.config.checkandrepair.directrename }}"
+  - regexp: "^ReorderFiles="
+    line: "ReorderFiles={{ nzbget.config.queue.reorderfiles }}"
 
 - name: Remove placeholder new-servers
   lineinfile:
