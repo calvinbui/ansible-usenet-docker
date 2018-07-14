@@ -11,7 +11,7 @@ nzbhydra2:
       name: "{{ global.nzbget.name }}"
       url: "http://{{ global.nzbget.name }}.{{ docker.network }}:{{ global.nzbget.port.http }}"
       type: NZBGET
-      nzbAddingType: SEND_LINK
+      nzbAddingType: UPLOAD
       username: null
       password: null
       category: "No category"
