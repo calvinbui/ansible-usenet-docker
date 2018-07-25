@@ -68,7 +68,7 @@
     block: |+2
         downloaders:
         - apiKey: null
-          defaultCategory: "{{ nzbhydra2.config.downloaders.category }}"
+          defaultCategory: "{{ nzbhydra2.config.downloaders.defaultCategory }}"
           downloadType: "{{ nzbhydra2.config.downloaders.downloadType }}"
           enabled: true
           iconCssClass: ""

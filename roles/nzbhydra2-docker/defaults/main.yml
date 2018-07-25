@@ -14,7 +14,7 @@ nzbhydra2:
       nzbAddingType: UPLOAD
       username: null
       password: null
-      category: "No category"
+      defaultCategory: ""
     main:
       apikey: "{{ global.nzbhydra2.config.main.apikey }}"
       dereferer:
