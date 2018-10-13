@@ -14,6 +14,8 @@
       path: "{{ traefik.config.directory }}/acme.json"
       state: touch
       mode: "0600"
+      modification_time: "preserve"
+      access_time: "preserve"
 
 - name: Copy traefik config
   template:
