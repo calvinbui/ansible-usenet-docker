@@ -25,7 +25,6 @@
     name: "{{ traefik.name }}"
     image: "{{ traefik.image }}"
     state: started
-    recreate: yes
     restart_policy: always
     command: "--docker"
     networks:

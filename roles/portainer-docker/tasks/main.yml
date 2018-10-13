@@ -5,7 +5,6 @@
     name: "{{ portainer.name }}"
     image: "{{ portainer.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     command: --no-auth
     networks:

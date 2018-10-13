@@ -5,7 +5,6 @@
     name: "{{ datadog.name }}"
     image: "{{ datadog.image }}"
     state: started
-    recreate: yes
     restart_policy: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

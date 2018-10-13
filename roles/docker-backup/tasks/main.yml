@@ -14,7 +14,6 @@
     name: "{{ dockerbackup.name }}"
     image: "{{ dockerbackup.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

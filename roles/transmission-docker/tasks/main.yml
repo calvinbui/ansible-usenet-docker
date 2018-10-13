@@ -10,7 +10,6 @@
     name: "{{ transmission.name }}"
     image: "{{ transmission.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

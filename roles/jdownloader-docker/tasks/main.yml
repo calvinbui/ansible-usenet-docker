@@ -5,7 +5,6 @@
     name: "{{ jdownloader.name }}"
     image: "{{ jdownloader.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

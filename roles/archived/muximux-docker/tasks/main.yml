@@ -21,7 +21,6 @@
     name: "{{ muximux.name }}"
     image: "{{ muximux.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

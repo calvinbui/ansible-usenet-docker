@@ -19,7 +19,6 @@
     name: "{{ radarr.name }}"
     image: "{{ radarr.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

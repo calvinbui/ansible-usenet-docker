@@ -10,7 +10,6 @@
     name: "{{ nzbget.name }}"
     image: "{{ nzbget.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

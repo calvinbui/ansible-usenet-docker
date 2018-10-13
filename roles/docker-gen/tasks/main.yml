@@ -34,7 +34,6 @@
     name: "{{ dockergen.name }}"
     image: "{{ dockergen.image }}"
     state: started
-    recreate: yes
     restart_policy: always
     command: "-notify-sighup '{{ global.nginx.name }}' -watch /etc/docker-gen/templates/docker.tmpl /etc/docker-gen/templates/docker"
     volumes:

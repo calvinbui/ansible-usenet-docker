@@ -10,7 +10,6 @@
     name: "{{ nzbhydra2.name }}"
     image: "{{ nzbhydra2.image }}"
     state: started
-    recreate: yes
     restart_policy: unless-stopped
     networks:
       - name: "{{ docker.network }}"

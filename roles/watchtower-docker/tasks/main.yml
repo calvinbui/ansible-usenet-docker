@@ -5,7 +5,6 @@
     name: "{{ watchtower.name }}"
     image: "{{ watchtower.image }}"
     state: started
-    recreate: yes
     restart_policy: on-failure
     command: "--cleanup --debug --schedule '0 0 4 * * *'"
     networks:
