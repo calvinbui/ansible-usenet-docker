@@ -116,12 +116,15 @@ nzbget:
       dupecheck: no
     queue:
       poststrategy: "sequential"
+      reorderfiles: "yes"
     connection:
       downloadrate: 11000
     checkandrepair:
       parpausequeue: "yes"
+      directrename: "yes"
     unpack:
       unpackpausequeue: "yes"
+      directunpack: "yes"
     script:
       scriptpausequeue: "yes"
     categories:
@@ -136,4 +139,4 @@ nzbget:
       three:
         name: "Games"
         destdir: "Games"
-        aliases: "Games, Wii"
+        aliases: "Games"
