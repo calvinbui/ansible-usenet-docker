@@ -1,0 +1,9 @@
+---
+
+- src: https://github.com/calvinbui/ansible-ubuntu-setup
+  version: master
+  name: ubuntu-setup
+
+- src: https://github.com/calvinbui/ansible-docker
+  version: master
+  name: docker

@@ -1,30 +1,45 @@
 ---
 
-- hosts: usenet, vagrant
+- hosts: all
+  become: true
+  gather_facts: false
 
-  vars_files:
-    - vars/services.yml
-    - vars/httpauthusers.yml
+  pre_tasks:
+    - raw: which /usr/bin/python || which /usr/bin/python3
+      register: py_interpreter
+      changed_when: py_interpreter.stdout != ""
+    - set_fact:
+        ansible_python_interpreter: "{{ py_interpreter.stdout }}"
+    - name: Gathering Facts
+      setup: #aka gather_facts
 
   roles:
     - ubuntu-setup
-    - network-shares
     - docker
-    - docker-network
-    - nzbget-docker
-    - transmission-docker
-    - nzbhydra2-docker
-    - sonarr-docker
-    - couchpotato-docker
-    - jdownloader-docker
-    - organizr-docker
-    - portainer-docker
-    - traefik-docker
-    - backstroke
-    - watchtower-docker
-    - docker-backup
-    - datadog-docker
-    - logzio-docker
+
+  # vars_files:
+  #   - vars/services.yml
+  #   - vars/httpauthusers.yml
+
+  # roles:
+    # - ubuntu-setup
+    # - network-shares
+    # - docker
+    # - docker-network
+    # - nzbget-docker
+    # - transmission-docker
+    # - nzbhydra2-docker
+    # - sonarr-docker
+    # - couchpotato-docker
+    # - jdownloader-docker
+    # - organizr-docker
+    # - portainer-docker
+    # - traefik-docker
+    # - backstroke
+    # - watchtower-docker
+    # - docker-backup
+    # - datadog-docker
+    # - logzio-docker
 
     # Testing
     # - radarr-docker

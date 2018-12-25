@@ -46,3 +46,16 @@
     fstype: nfs
     state: mounted
   become: true
+
+- name: Get apt package facts to see if Docker is installed
+  package_facts:
+    manager: apt
+
+- name: Start docker after network shares are mounted
+  lineinfile:
+    path: /lib/systemd/system/docker.socket
+    state: present
+    insertafter: '^\[Unit\]$'
+    line: "After={{ nfs_mount.unit_file }}.mount"
+  when: '"docker-ce" not in ansible_facts.packages'
+  become: true
