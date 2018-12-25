@@ -14,7 +14,6 @@
       setup: #aka gather_facts
 
   roles:
-    - ubuntu-setup
     - docker
 
   # vars_files:
