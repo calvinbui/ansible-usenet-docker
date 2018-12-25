@@ -1,19 +1,8 @@
 ---
-# playbook vars
-user:
-  name: calvin
-  group: calvin
 
-### broken per role
-
-# ubuntu-setup
 ubuntu_setup_packages:
   - open-vm-tools
   - nano
   - htop
 ubuntu_setup_ssh_user: "{{ user.name }}"
 ubuntu_setup_ssh_keys: https://github.com/calvinbui.keys
-
-# docker
-docker_users:
-  - "{{ user.name }}"
