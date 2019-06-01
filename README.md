@@ -1,3 +1,7 @@
+# Deprecated
+
+See my new playbook that makes proper use of roles at https://github.com/calvinbui/usenet-playbook
+
 # Usenet Docker Ansible
 
 ## Run
